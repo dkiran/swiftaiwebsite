@@ -1,0 +1,72 @@
+---
+import '../styles/global.css';
+import SEO from '../components/SEO.astro';
+import { site, nav } from '../data/site';
+interface Props { title: string; description: string; path: string; ogType?: 'website' | 'article'; schema?: object[]; }
+const props = Astro.props;
+const year = new Date().getFullYear();
+---
+<!doctype html>
+<html lang="en-IN">
+  <head>
+    <meta charset="utf-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1" />
+    <meta name="theme-color" content="#ffffff" />
+    <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
+    <link rel="alternate" type="application/rss+xml" title="Swift AI Blog" href="/rss.xml" />
+    <SEO {...props} />
+    <script is:inline>document.documentElement.classList.add('js')</script>
+    <noscript><style>.js .reveal{opacity:1!important;transform:none!important}</style></noscript>
+  </head>
+  <body>
+    <a class="skip" href="#main">Skip to content</a>
+    <header class="nav">
+      <div class="container">
+        <a class="logo" href="/" aria-label="Swift AI home"><i></i>Swift AI</a>
+        <button class="nav-toggle" aria-label="Menu" aria-expanded="false" aria-controls="menu">
+          <svg width="22" height="22" viewBox="0 0 22 22" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round"><path d="M3 7h16M3 15h16"/></svg>
+        </button>
+        <ul id="menu">
+          {nav.map((n) => <li><a href={n.href}>{n.label}</a></li>)}
+          <li><a href="/hire-a-cto/">Hire a CTO</a></li>
+        </ul>
+        <a class="btn btn-primary btn-sm hide-m" href="/book-ai-audit/">Book free audit</a>
+      </div>
+    </header>
+    <main id="main"><slot /></main>
+    <footer class="footer">
+      <div class="container">
+        <div class="cols">
+          <div>
+            <a class="logo" href="/"><i></i>Swift AI</a>
+            <p style="margin-top:12px;max-width:34ch">{site.tagline}</p>
+          </div>
+          <div><h4>Services</h4><ul>
+            <li><a href="/ai-automations/">AI Automations</a></li><li><a href="/fractional-cto/">Fractional CTO</a></li>
+            <li><a href="/consultation/">Consultation</a></li><li><a href="/book-ai-audit/">Free AI Audit</a></li></ul></div>
+          <div><h4>Products &amp; tools</h4><ul>
+            <li><a href={site.products.singleqr} rel="noopener">SingleQR</a></li><li><a href={site.products.singlestaff} rel="noopener">SingleStaff</a></li>
+            <li><a href="/ai-automations/roi-calculator/">AI ROI calculator</a></li><li><a href="/fractional-cto/cost-calculator/">CTO cost calculator</a></li></ul></div>
+          <div><h4>Company</h4><ul>
+            <li><a href="/about/">About</a></li><li><a href="/blog/">Blog</a></li><li><a href="/hire-a-cto/">Hire a CTO</a></li>
+            <li><a href="/join-as-a-cto/">Join as a CTO</a></li><li><a href="/contact/">Contact</a></li></ul></div>
+        </div>
+        <div class="legal">
+          <span>© {year} {site.legalName}. {site.cin}. {site.gst}.</span>
+          <span><a href="/privacy/">Privacy</a> · <a href="/terms/">Terms</a></span>
+        </div>
+      </div>
+    </footer>
+    <script is:inline>
+      (function () {
+        var t = document.querySelector('.nav-toggle'), m = document.getElementById('menu');
+        t && t.addEventListener('click', function () { var o = m.classList.toggle('open'); t.setAttribute('aria-expanded', o); });
+        var els = document.querySelectorAll('.reveal');
+        var reduce = window.matchMedia('(prefers-reduced-motion: reduce)').matches;
+        if (reduce || !('IntersectionObserver' in window)) { els.forEach(function (e) { e.classList.add('in'); }); return; }
+        var io = new IntersectionObserver(function (es) { es.forEach(function (e) { if (e.isIntersecting) { e.target.classList.add('in'); io.unobserve(e.target); } }); }, { threshold: 0.12 });
+        els.forEach(function (e) { io.observe(e); });
+      })();
+    </script>
+  </body>
+</html>

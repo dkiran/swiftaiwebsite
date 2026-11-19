@@ -2,6 +2,7 @@ import { pricing } from '../data/pricing';
 
 const num = (v: unknown) => (typeof v === 'number' && Number.isFinite(v) && v > 0 ? v : 0);
 const round = (v: number) => Math.round(v);
+const roundK = (v: number) => Math.round(v / 1000) * 1000; // estimates read as estimates
 
 export type CtoInput = { stage: 'idea' | 'mvp' | 'scaling'; model: 'advisory' | 'handson' | 'teambuild'; hoursPerWeek: number; months: number; teamSize: number };
 export type CtoEstimate = { monthlyMin: number; monthlyMax: number; totalMin: number; totalMax: number; fullTimeYearly: number };
@@ -12,8 +13,8 @@ export function estimateCto(i: CtoInput): CtoEstimate {
   const hours = num(i.hoursPerWeek) * p.weeksPerMonth;
   const uplift = 1 + Math.min(num(i.teamSize), 30) * p.teamSizeUplift;
   const mult = (p.stageMultiplier[i.stage] ?? 1) * uplift;
-  const monthlyMin = round(hours * lo * mult);
-  const monthlyMax = round(hours * hi * mult);
+  const monthlyMin = roundK(hours * lo * mult);
+  const monthlyMax = roundK(hours * hi * mult);
   const months = num(i.months);
   return { monthlyMin, monthlyMax, totalMin: monthlyMin * months, totalMax: monthlyMax * months, fullTimeYearly: p.fullTimeYearly[i.stage] ?? p.fullTimeYearly.mvp };
 }

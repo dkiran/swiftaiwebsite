@@ -8,7 +8,8 @@
     "build": "astro build",
     "preview": "astro preview",
     "test": "vitest run",
-    "check": "node scripts/check-seo.mjs"
+    "check": "node scripts/check-seo.mjs",
+    "build:chat": "esbuild infra/chat/lambda.ts --bundle --platform=node --target=node22 --format=esm --outfile=infra/chat/dist/index.mjs"
   },
   "dependencies": {
     "@astrojs/rss": "^4.0.19",
@@ -17,6 +18,7 @@
     "astro": "^5.18.2"
   },
   "devDependencies": {
+    "esbuild": "^0.28.2",
     "typescript": "^5.9.3",
     "vitest": "^5.1.1"
   }

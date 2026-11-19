@@ -3,7 +3,7 @@
 export const pricing = {
   cto: {
     // INR per hour, [min, max]
-    hourly: { advisory: [2500, 4500], handson: [3000, 5500], teambuild: [3500, 6500] } as Record<string, [number, number]>,
+    hourly: { advisory: [1500, 3000], handson: [1800, 3500], teambuild: [2200, 4000] } as Record<string, [number, number]>,
     stageMultiplier: { idea: 1, mvp: 1, scaling: 1.2 } as Record<string, number>,
     teamSizeUplift: 0.01, // +1% per engineer managed, capped at 30 engineers
     weeksPerMonth: 4.33,

@@ -171,7 +171,7 @@ input[type=range] { width: 100%; accent-color: var(--blue); }
 .footer { background: var(--bg-alt); padding: 56px 0 32px; font-size: .88rem; color: var(--muted); }
 .footer .cols { display: grid; gap: 32px; grid-template-columns: 2fr repeat(3, 1fr); }
 @media (max-width: 760px) { .footer .cols { grid-template-columns: 1fr 1fr; } }
-.footer h4 { font-size: .85rem; color: var(--ink); margin-bottom: 12px; letter-spacing: 0; }
+.footer .fh { font-size: .85rem; font-weight: 600; color: var(--ink); margin: 0 0 12px; letter-spacing: 0; }
 .footer ul { list-style: none; padding: 0; margin: 0; display: grid; gap: 8px; }
 .footer a { color: var(--muted); } .footer a:hover { color: var(--ink); }
 .footer .legal { border-top: 1px solid var(--line); margin-top: 36px; padding-top: 20px; display: flex; flex-wrap: wrap; justify-content: space-between; gap: 8px; }

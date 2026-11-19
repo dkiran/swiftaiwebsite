@@ -27,7 +27,7 @@ Marketing site for **Swift AI Tech Solutions Private Limited** ("Swift AI"). It 
 
 ## Constraints
 - **Font:** SF Pro cannot be self-hosted (Apple's license). Use the stack `-apple-system, BlinkMacSystemFont, "SF Pro Display", "SF Pro Text", Inter, "Segoe UI", sans-serif`. Real SF Pro shows on Apple devices; Inter (self-hosted) covers the rest. Weights and sizes follow Apple's type scale.
-- **Colors:** singleqr.in could not be fetched from this environment (network blocked). I will use a white and blue palette (Apple-like blue, about `#0071e3` family, with a deep navy for dark sections) and swap in SingleQR's exact hex codes if you send them.
+- **Colors (decided by user):** white plus Tailwind v4 `blue-600`, `--color-blue-600: oklch(54.6% 0.245 262.881)` (about `#155dfc`), used for links, buttons and accents. Deep navy for dark sections is my call.
 - **Forms:** static site, so they post to a form service (Formspree or Web3Forms). One key to paste in.
 - **Facts:** only what you've told me: the legal name, the four services and the two products with their URLs. Contact details, address, CIN/GST and founder bio are placeholders you fill in.
 

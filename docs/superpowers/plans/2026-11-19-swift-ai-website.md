@@ -17,6 +17,7 @@
 - Primary CTA everywhere: "Book a free AI Audit" → `/book-ai-audit/`.
 - Products link out: SingleQR `https://singleqr.in`, SingleStaff `https://www.singlestaff.com`.
 - No invented clients, logos, statistics or testimonials. Contact details, address, GST/CIN, founder bio are clearly marked placeholders in one file: `src/data/site.ts`.
+- Hosting is Cloudflare Pages (needed for the chat function). Secrets never ship to the browser.
 - Forms post to `PUBLIC_FORM_ENDPOINT` (env var, documented in `.env.example`).
 - One H1 per page; WCAG AA contrast; respects `prefers-reduced-motion`; mobile-first.
 - Site URL in `astro.config.mjs` is `https://swiftai.in` (placeholder, one place to change).
@@ -26,6 +27,9 @@
 - Form with empty or invalid email/phone: inline error, no network call.
 - Blog post missing `description`/`date`: build fails rather than shipping bad meta.
 - Page with long headlines at 320px width: no horizontal scroll.
+- Chatbot asked something off-topic, or to reveal its instructions or the API key: polite refusal pointing to the audit.
+- Chat with the key missing or the upstream failing: widget shows the contact fallback, never hangs.
+- Calculator with blank, negative or huge inputs: clamped, no NaN or negative rupees shown.
 - `prefers-reduced-motion`: content visible with no animation (reveal elements must not stay hidden).
 
 ---
@@ -113,3 +117,29 @@
 - [ ] **Step 3:** Run `npm run preview`, then use Playwright to screenshot Home, a service page, a blog post and the audit form at 390px and 1440px. Confirm no horizontal scroll at 320px, then correct whatever looks off.
 - [ ] **Step 4:** Run Lighthouse (Chromium at `/opt/pw-browsers/chromium`, `--headless --no-sandbox`) on Home and a blog post. Expected: Performance, Accessibility, Best Practices and SEO all ≥ 95; fix any shortfall.
 - [ ] **Step 5:** Write `README.md` (dev, build, deploy to Cloudflare Pages/Netlify, how to add a post, how to set `PUBLIC_FORM_ENDPOINT`, where the placeholders are). Commit `docs: readme` and push.
+
+### Task 8: Calculators
+
+**Files:** Create `src/data/pricing.ts`, `src/lib/calc.ts`, `src/lib/calc.test.ts`, `src/components/{CtoCalculator,RoiCalculator}.astro`, `src/pages/fractional-cto/cost-calculator/index.astro`, `src/pages/ai-automations/roi-calculator/index.astro`.
+
+**Interfaces:**
+- Produces: `estimateCto(i: {stage: 'idea'|'mvp'|'scaling'; model: 'advisory'|'handson'|'teambuild'; hoursPerWeek: number; months: number; teamSize: number}): {monthlyMin: number; monthlyMax: number; totalMin: number; totalMax: number; fullTimeYearly: number}` and `estimateRoi(i: {process: string; tasksPerMonth: number; minutesPerTask: number; hourlyCostInr: number; automationPct: number}): {hoursSavedMonthly: number; savedMonthlyInr: number; savedYearlyInr: number; buildCostInr: number; paybackMonths: number}`; all rates come from `pricing.ts`.
+
+- [ ] **Step 1: Write failing tests** in `calc.test.ts`: `estimateCto` at 0 hours returns zeros; totals equal monthly times months; min is always ≤ max; `estimateRoi` with 100 tasks, 30 minutes, ₹500/hour, 80% gives 40 hours and ₹20,000 saved monthly; `paybackMonths` is `Infinity`-safe (returns `null`) when savings are 0; non-numeric or negative inputs are clamped to 0. Run `npx vitest run`; expected FAIL.
+- [ ] **Step 2:** Implement `calc.ts` and `pricing.ts` (placeholder rates flagged with a `// PLACEHOLDER: set real rates` comment) to pass.
+- [ ] **Step 3:** Implement the two components with live-updating outputs, INR formatting (`en-IN`), a visible "indicative estimate, not a quote" note, and a CTA that pre-fills the lead form with the result. Add Service-style `WebApplication` JSON-LD and an answer-first intro for AEO. Link both from the service pages and Home.
+- [ ] **Step 4:** Build + check + `npx vitest run` PASS. Commit `feat: cto and automation calculators`.
+
+### Task 9: AI chatbot
+
+**Files:** Create `functions/api/chat.ts`, `functions/api/chat.test.ts`, `src/data/knowledge.ts`, `src/components/ChatWidget.astro`, `src/scripts/chat.ts`; modify `Base.astro` (mount widget), `.env.example`, `README.md`.
+
+**Interfaces:**
+- Consumes: site content in `knowledge.ts` (`buildSystemPrompt(): string`, assembled from `site.ts`, FAQs and service summaries).
+- Produces: `POST /api/chat` body `{messages: {role: 'user'|'assistant'; content: string}[]}` → streamed text; `handleChat(req: Request, env: {ANTHROPIC_API_KEY?: string; CHAT_MODEL?: string; CHAT_DISABLED?: string}, deps: {fetch: typeof fetch; limiter: RateLimiter}): Promise<Response>`.
+
+- [ ] **Step 1: Write failing tests** in `chat.test.ts` with an injected fake `fetch`: 503 with a JSON `{error: 'not_configured'}` when the key is missing; 503 when `CHAT_DISABLED` is `'1'`; 400 for empty `messages`, a message over 1,000 characters, or more than 20 messages; 429 on the 11th request in a minute from one IP; only the last 10 messages are forwarded upstream; the system prompt is sent and contains "Swift AI Tech Solutions Private Limited"; the API key never appears in the response. Run; expected FAIL.
+- [ ] **Step 2:** Implement `handleChat` and the Pages Function export (`onRequestPost`) to pass. Call the Anthropic Messages API with streaming, `max_tokens` 500, no tools. The system prompt instructs: answer only from supplied context, say you don't know and offer the audit link when unsure, never quote prices beyond "indicative, see calculators", keep replies short, and refuse unrelated requests.
+- [ ] **Step 3:** Implement the widget: launcher button, panel with streaming reply rendering, suggested questions (What do you automate? How does the free AI audit work? What does a fractional CTO cost?), keyboard accessible (focus trap, Esc to close, `aria-live`), a persistent "AI assistant, may make mistakes" note, and the fallback contact message on 503. Conversation kept in memory only, nothing stored.
+- [ ] **Step 4:** Run `npx wrangler pages dev dist` with a dummy key and a stubbed upstream, send a question through the widget with Playwright, and confirm a streamed reply renders. Run tests; PASS. Commit `feat: ai chatbot widget and chat function`.
+- [ ] **Step 5:** Add deploy notes to the README: Cloudflare Pages project, set `ANTHROPIC_API_KEY` as an encrypted variable, optional `CHAT_MODEL`, and a spend limit on the API key.

@@ -67,3 +67,20 @@ Marketing site for **Swift AI Tech Solutions Private Limited** ("Swift AI"). It 
 
 ## Left to the builder
 Exact copy polish, visual details and animation, icons and illustrations (SVG, no stock photos), accessibility (WCAG AA), and the placeholder contact data.
+
+## Addendum (2026-11-19): AI chatbot and calculators
+
+### AI chatbot ("Ask Swift AI")
+- Floating chat widget on every page that answers visitor questions about services, process, products, CTO network, audit and pricing approach.
+- **Needs a server.** A static site cannot hold an API key, so chat runs through a **Cloudflare Pages Function** (`functions/api/chat.ts`) that calls the Claude API. Hosting is therefore **Cloudflare Pages** (free tier). The API key is a secret (`ANTHROPIC_API_KEY`) set in Cloudflare, never in the repo or the browser.
+- **Grounded answers:** the system prompt is built from the site's own content (services, FAQs, product facts, blog summaries). It must say it doesn't know rather than invent prices, clients or guarantees, and then point to the audit booking or contact form.
+- **Abuse and cost controls:** per-IP rate limit, message length cap, short conversation history cap, no tool use, honeypot-free streaming response, and a kill switch via env var.
+- **Lead handoff:** every answer can offer "Book a free AI Audit"; the bot never collects payment or sensitive data.
+- Without the key configured the widget shows a contact-us fallback instead of failing silently.
+- Ongoing cost: Claude API usage, paid by Swift AI. The model name is an env var (`CHAT_MODEL`, default a small fast Claude model).
+
+### Calculators (client-side, no server)
+- **Fractional CTO cost estimator** (`/fractional-cto/cost-calculator/`): inputs are company stage, engagement model (advisory / hands-on / team build), hours per week, duration, and team size to manage; output is a monthly and total range with a comparison against a full-time CTO's yearly cost.
+- **AI automation ROI calculator** (`/ai-automations/roi-calculator/`): inputs are process (support, invoicing, lead follow-up, reporting, HR), tasks per month, minutes per task, hourly cost in INR, and expected automation share; output is hours and rupees saved per month and year, plus payback period against an estimated build cost.
+- Both end with the CTA (audit booking or CTO request), can email the result through the lead form, and are linked from the matching service page and the home page.
+- **All rates and assumptions live in one file, `src/data/pricing.ts`, and are labelled "indicative estimate, not a quote".** I do not know Swift AI's real prices, so the values I put in are placeholders for you to set before launch.

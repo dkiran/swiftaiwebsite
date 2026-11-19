@@ -1,0 +1,62 @@
+---
+import Base from '../../../layouts/Base.astro';
+import CTA from '../../../components/CTA.astro';
+import FAQ from '../../../components/FAQ.astro';
+import { site } from '../../../data/site';
+import { breadcrumbSchema } from '../../../lib/schema';
+const faqs = [
+  { q: 'How do you calculate the ROI of AI automation?', a: 'Multiply tasks per month by minutes per task to get hours, multiply by the share you can automate, then by the hourly cost of the person doing the work. That gives monthly savings. Divide the build cost by monthly savings to get payback time.' },
+  { q: 'How accurate is this calculator?', a: 'It is an indicative estimate based on your inputs and simplified assumptions. A free AI Audit replaces the assumptions with your real processes and gives a more reliable figure.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Automations', path: '/ai-automations/' }, { name: 'ROI calculator', path: '/ai-automations/roi-calculator/' }]),
+  { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'AI Automation ROI Calculator', url: `${site.url}/ai-automations/roi-calculator/`, applicationCategory: 'BusinessApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': `${site.url}/#org` } }];
+---
+<Base title="AI Automation ROI Calculator for Indian Businesses"
+  description="Estimate the hours and rupees AI automation can save your business each month, and how quickly it pays back. Free calculator from Swift AI."
+  path="/ai-automations/roi-calculator/" schema={schema}>
+  <section class="section" style="padding-top:clamp(48px,8vw,96px)"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Free tool</span><h1 style="font-size:clamp(2.2rem,5vw,3.75rem)">AI automation <span class="gradient">ROI calculator.</span></h1>
+      <p class="lead">See how many hours and rupees a single automation could save you, and how fast it pays for itself.</p></div>
+    <div class="calc" id="roi-calc">
+      <div class="form">
+        <div class="field"><label for="process">Which process?</label><select id="process">
+          <option value="support">Customer support</option><option value="sales">Sales lead follow-up</option><option value="finance">Invoicing and finance ops</option>
+          <option value="hr">HR and recruiting</option><option value="reporting">Reporting</option><option value="documents">Document processing</option></select></div>
+        <div class="row">
+          <div class="field"><label for="tasks">Tasks per month</label><input id="tasks" type="number" min="0" value="300" inputmode="numeric" /></div>
+          <div class="field"><label for="mins">Minutes per task</label><input id="mins" type="number" min="0" value="10" inputmode="numeric" /></div>
+        </div>
+        <div class="field"><label for="cost">Hourly cost of the person doing it (₹)</label><input id="cost" type="number" min="0" value="300" inputmode="numeric" /></div>
+        <div class="field"><label for="pct">Share that AI can handle: <b id="pct-v">70</b>%</label><input id="pct" type="range" min="10" max="95" value="70" /></div>
+      </div>
+      <div class="result" aria-live="polite">
+        <small>You could save each month</small>
+        <div class="big" id="saved">–</div>
+        <hr />
+        <div class="range-row"><span>Hours saved per month</span><b id="hours">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Saved per year</span><b id="year">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Typical build cost</span><b id="build">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Payback</span><b id="payback">–</b></div>
+        <a class="btn btn-primary" href="/book-ai-audit/" style="width:100%;margin-top:22px">Get my real numbers: free audit</a>
+        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. Build cost is a typical assumption for this kind of project.</p>
+      </div>
+    </div>
+  </div></section>
+  <section class="section alt"><div class="container"><div class="head center"><h2>Common questions</h2></div><FAQ items={faqs} /></div></section>
+  <CTA />
+</Base>
+<script>
+  import { estimateRoi, inr } from '../../../lib/calc';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const run = () => {
+    const r = estimateRoi({ process: $('process').value, tasksPerMonth: +$('tasks').value, minutesPerTask: +$('mins').value, hourlyCostInr: +$('cost').value, automationPct: +$('pct').value });
+    $('pct-v').textContent = $('pct').value;
+    $('saved').textContent = inr(r.savedMonthlyInr);
+    $('hours').textContent = r.hoursSavedMonthly.toLocaleString('en-IN', { maximumFractionDigits: 1 });
+    $('year').textContent = inr(r.savedYearlyInr);
+    $('build').textContent = inr(r.buildCostInr);
+    $('payback').textContent = r.paybackMonths === null ? 'Enter your numbers' : r.paybackMonths < 1 ? 'Under a month' : `${r.paybackMonths.toFixed(1)} months`;
+  };
+  document.querySelectorAll('#roi-calc input, #roi-calc select').forEach((e) => e.addEventListener('input', run));
+  run();
+</script>

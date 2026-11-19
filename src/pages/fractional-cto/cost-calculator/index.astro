@@ -1,0 +1,60 @@
+---
+import Base from '../../../layouts/Base.astro';
+import CTA from '../../../components/CTA.astro';
+import FAQ from '../../../components/FAQ.astro';
+import { site } from '../../../data/site';
+import { breadcrumbSchema } from '../../../lib/schema';
+const faqs = [
+  { q: 'How much does a fractional CTO cost in India?', a: 'It depends on hours per week, seniority and whether the role is advisory or hands-on. This calculator gives an indicative monthly and total range for your inputs and compares it with the yearly cost of a full-time CTO. It is an estimate, not a quote.' },
+  { q: 'Is a fractional CTO cheaper than a full-time CTO?', a: 'Usually yes for early-stage companies, because you pay only for the hours you need and carry no long-term salary commitment. As the workload grows toward full-time, the gap narrows.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fractional CTO', path: '/fractional-cto/' }, { name: 'Cost calculator', path: '/fractional-cto/cost-calculator/' }]),
+  { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Fractional CTO Cost Calculator', url: `${site.url}/fractional-cto/cost-calculator/`, applicationCategory: 'BusinessApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': `${site.url}/#org` } }];
+---
+<Base title="Fractional CTO Cost Calculator (India, ₹)"
+  description="Estimate what a fractional CTO costs for your startup or SME in India. Compare monthly and total cost against a full-time CTO."
+  path="/fractional-cto/cost-calculator/" schema={schema}>
+  <section class="section" style="padding-top:clamp(48px,8vw,96px)"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Free tool</span><h1 style="font-size:clamp(2.2rem,5vw,3.75rem)">Fractional CTO <span class="gradient">cost calculator.</span></h1>
+      <p class="lead">Answer four questions to see an indicative monthly and total cost, and how it compares with hiring a full-time CTO.</p></div>
+    <div class="calc" id="cto-calc">
+      <div class="form">
+        <div class="field"><label for="stage">Company stage</label><select id="stage"><option value="idea">Idea stage</option><option value="mvp" selected>Building MVP / early users</option><option value="scaling">Scaling</option></select></div>
+        <div class="field"><label for="model">What kind of help?</label><select id="model"><option value="advisory">Advisory (strategy, reviews)</option><option value="handson" selected>Hands-on (leads the team)</option><option value="teambuild">Build the engineering team</option></select></div>
+        <div class="field"><label for="hours">Hours per week: <b id="hours-v">12</b></label><input id="hours" type="range" min="2" max="40" value="12" /></div>
+        <div class="field"><label for="months">Duration: <b id="months-v">6</b> months</label><input id="months" type="range" min="1" max="24" value="6" /></div>
+        <div class="field"><label for="team">Engineers to manage: <b id="team-v">5</b></label><input id="team" type="range" min="0" max="30" value="5" /></div>
+      </div>
+      <div class="result" aria-live="polite">
+        <small>Indicative monthly cost</small>
+        <div class="big" id="monthly">–</div>
+        <hr />
+        <div class="range-row"><span>Total over <span id="m2">6</span> months</span><b id="total">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Full-time CTO, per year</span><b id="ft">–</b></div>
+        <p id="verdict" style="margin-top:18px"></p>
+        <a class="btn btn-primary" href="/hire-a-cto/" style="width:100%">Hire a CTO</a>
+        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. Actual cost depends on the person, scope and timing.</p>
+      </div>
+    </div>
+  </div></section>
+  <section class="section alt"><div class="container"><div class="head center"><h2>Common questions</h2></div><FAQ items={faqs} /></div></section>
+  <CTA title="Want an exact figure?" sub="Tell us what you need and we'll recommend the right CTO and a fixed monthly price." href="/hire-a-cto/" label="Request a CTO" />
+</Base>
+<script>
+  import { estimateCto, inr } from '../../../lib/calc';
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const run = () => {
+    const v = { stage: $('stage').value, model: $('model').value, hoursPerWeek: +$('hours').value, months: +$('months').value, teamSize: +$('team').value } as Parameters<typeof estimateCto>[0];
+    const r = estimateCto(v);
+    $('hours-v').textContent = String(v.hoursPerWeek); $('months-v').textContent = String(v.months); $('team-v').textContent = String(v.teamSize); $('m2').textContent = String(v.months);
+    $('monthly').textContent = `${inr(r.monthlyMin)} – ${inr(r.monthlyMax)}`;
+    $('total').textContent = `${inr(r.totalMin)} – ${inr(r.totalMax)}`;
+    $('ft').textContent = inr(r.fullTimeYearly);
+    const fractionalYear = r.monthlyMax * 12;
+    $('verdict').textContent = fractionalYear < r.fullTimeYearly
+      ? `At this level a fractional CTO costs up to ${Math.round((1 - fractionalYear / r.fullTimeYearly) * 100)}% less per year than a full-time CTO.`
+      : 'At this many hours, a full-time CTO may be the better value. Talk to us about the right setup.';
+  };
+  document.querySelectorAll('#cto-calc input, #cto-calc select').forEach((e) => e.addEventListener('input', run));
+  run();
+</script>

@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+---
+<Base title="Terms of Use" description="Terms for using the Swift AI website, calculators and chat assistant, operated by Swift AI Tech Solutions Private Limited." path="/terms/">
+  <section class="section"><div class="container"><div class="prose">
+    <h1 style="font-size:clamp(2rem,5vw,3rem)">Terms of Use</h1>
+    <p><em>Last updated: November 2026.</em></p>
+    <p>This website is operated by {site.legalName}. By using it you agree to these terms.</p>
+    <h2>Information only</h2>
+    <p>Content on this site is general information, not professional, legal or financial advice. Services are provided under a separate written agreement.</p>
+    <h2>Calculators and estimates</h2>
+    <p>Our cost and ROI calculators give indicative estimates based on your inputs and simplified assumptions. They are not quotes or guarantees. Actual cost and results vary.</p>
+    <h2>AI chat assistant</h2>
+    <p>The chat assistant uses AI and may produce incorrect or incomplete answers. It cannot make offers, agree prices or create contracts on our behalf.</p>
+    <h2>CTO network</h2>
+    <p>Submitting an application or request does not guarantee a match, engagement or acceptance. We review each submission.</p>
+    <h2>Intellectual property</h2>
+    <p>Site content, design and branding belong to {site.legalName} unless stated otherwise. Do not copy or reuse them without permission.</p>
+    <h2>Liability</h2>
+    <p>To the extent permitted by law, we are not liable for losses arising from use of this website or reliance on its content. Indian law governs these terms.</p>
+    <h2>Contact</h2>
+    <p><a href={`mailto:${site.email}`}>{site.email}</a></p>
+  </div></div></section>
+</Base>

@@ -1,0 +1,25 @@
+---
+import Base from '../../layouts/Base.astro';
+import { site } from '../../data/site';
+---
+<Base title="Privacy Policy" description="How Swift AI Tech Solutions Private Limited collects, uses and protects personal information submitted through this website and chat assistant." path="/privacy/">
+  <section class="section"><div class="container"><div class="prose">
+    <h1 style="font-size:clamp(2rem,5vw,3rem)">Privacy Policy</h1>
+    <p><em>Last updated: November 2026.</em></p>
+    <p>{site.legalName} ("Swift AI", "we") respects your privacy. This policy explains what we collect through this website and how we use it.</p>
+    <h2>Information we collect</h2>
+    <ul><li><b>Forms:</b> name, email, phone, company and the details you choose to write when you request an audit, appointment, CTO or send a message.</li>
+      <li><b>Chat assistant:</b> the messages you type. Please do not share passwords, payment details or other sensitive data in chat.</li>
+      <li><b>Calculators:</b> figures you enter are processed in your browser and are not sent to us unless you submit a form.</li></ul>
+    <h2>How we use it</h2>
+    <p>To respond to your request, schedule calls, provide the services you ask for, improve this website, and comply with law. We do not sell your personal information.</p>
+    <h2>Chat assistant and AI providers</h2>
+    <p>Chat messages are sent to an AI service provider to generate answers. We do not use the chat to make decisions about you, and answers may be inaccurate: please verify important details with us.</p>
+    <h2>Sharing</h2>
+    <p>We share data only with service providers that help us operate the website and respond to you (for example form handling, email and AI processing), under appropriate safeguards, or when required by law.</p>
+    <h2>Retention and your rights</h2>
+    <p>We keep enquiry data only as long as needed for the purpose above. You may ask us to access, correct or delete your personal data at <a href={`mailto:${site.email}`}>{site.email}</a>.</p>
+    <h2>Contact</h2>
+    <p>{site.legalName}, {site.address}. Email: {site.email}.</p>
+  </div></div></section>
+</Base>

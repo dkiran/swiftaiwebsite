@@ -1,0 +1,32 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import CTA from '../../components/CTA.astro';
+import { breadcrumbSchema } from '../../lib/schema';
+const posts = (await getCollection('blog')).sort((a, b) => b.data.date.getTime() - a.data.date.getTime());
+const cats = ['AI Automation', 'Fractional CTO'] as const;
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }])];
+const fmt = (d: Date) => d.toLocaleDateString('en-IN', { year: 'numeric', month: 'short', day: 'numeric' });
+---
+<Base title="Blog: AI Automation and Fractional CTO Guides"
+  description="Practical guides on AI automation for SMEs and fractional CTO services for startups, from the team at Swift AI."
+  path="/blog/" schema={schema}>
+  <section class="hero" style="padding-bottom:40px"><div class="container">
+    <span class="pill">Swift AI Blog</span><h1>Practical guides on <span class="gradient">AI and CTOs.</span></h1>
+    <p class="lead">Clear answers for business owners and founders. No hype.</p></div></section>
+  {cats.map((c) => (
+    <section class="section" id={c.toLowerCase().replace(/\s+/g, '-')} style="padding-top:40px">
+      <div class="container"><div class="head"><span class="eyebrow">{c}</span></div>
+        <div class="grid g3">
+          {posts.filter((p) => p.data.category === c).map((p) => (
+            <a class="card hover reveal" href={`/blog/${p.id}/`}>
+              <span class="tag" style="align-self:flex-start">{c}</span>
+              <h3>{p.data.title}</h3><p>{p.data.description}</p>
+              <span class="meta" style="margin-top:auto">{fmt(p.data.date)} · {p.data.readingMinutes} min read</span>
+            </a>
+          ))}
+        </div></div>
+    </section>
+  ))}
+  <CTA />
+</Base>

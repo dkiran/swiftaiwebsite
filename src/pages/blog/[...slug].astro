@@ -1,0 +1,53 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { site } from '../../data/site';
+import { breadcrumbSchema } from '../../lib/schema';
+
+export async function getStaticPaths() {
+  const posts = await getCollection('blog');
+  return posts.map((post) => ({ params: { slug: post.id }, props: { post } }));
+}
+const { post } = Astro.props;
+const { Content, headings } = await render(post);
+const d = post.data;
+const path = `/blog/${post.id}/`;
+const toc = headings.filter((h) => h.depth === 2);
+const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
+const related = [...all.filter((p) => p.data.category === d.category), ...all.filter((p) => p.data.category !== d.category)].slice(0, 2);
+const fmt = (x: Date) => x.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
+const service = d.category === 'AI Automation' ? { href: '/ai-automations/', label: 'AI Automations' } : { href: '/fractional-cto/', label: 'Fractional CTO services' };
+const schema = [
+  { '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.description, datePublished: d.date.toISOString(), dateModified: d.date.toISOString(),
+    author: { '@type': 'Organization', name: site.name, url: site.url }, publisher: { '@id': `${site.url}/#org` },
+    mainEntityOfPage: new URL(path, site.url).href, image: `${site.url}/og-default.png`, articleSection: d.category, inLanguage: 'en-IN' },
+  breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }, { name: d.title, path }]),
+];
+---
+<Base title={d.title} description={d.description} path={path} ogType="article" schema={schema}>
+  <article class="section" style="padding-top:clamp(40px,7vw,90px)">
+    <div class="container">
+      <div class="prose">
+        <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/blog/">Blog</a></nav>
+        <span class="tag">{d.category}</span>
+        <h1 style="font-size:clamp(2.1rem,5vw,3.5rem);margin:16px 0">{d.title}</h1>
+        <p class="meta">By {site.name} · <time datetime={d.date.toISOString()}>{fmt(d.date)}</time> · {d.readingMinutes} min read</p>
+        <div class="tldr"><strong>Short answer:</strong> {d.tldr}</div>
+        {toc.length > 2 && (
+          <nav aria-label="Contents" class="tldr" style="background:var(--bg-alt)"><strong style="color:var(--ink)">In this guide</strong>
+            <ol style="margin:8px 0 0">{toc.map((h) => <li><a href={`#${h.slug}`}>{h.text}</a></li>)}</ol></nav>
+        )}
+        <Content />
+        <p>Related: <a href={service.href}>{service.label}</a> · <a href="/book-ai-audit/">Free AI Audit</a></p>
+      </div>
+      {d.faq && <div style="margin-top:72px"><div class="head center"><h2>Frequently asked questions</h2></div><FAQ items={d.faq} /></div>}
+    </div>
+  </article>
+  <section class="section alt"><div class="container">
+    <div class="head"><h2 style="font-size:1.75rem">Keep reading</h2></div>
+    <div class="grid g2">{related.map((p) => <a class="card hover" href={`/blog/${p.id}/`}><span class="tag" style="align-self:flex-start">{p.data.category}</span><h3>{p.data.title}</h3><p>{p.data.description}</p></a>)}</div>
+  </div></section>
+  <CTA />
+</Base>

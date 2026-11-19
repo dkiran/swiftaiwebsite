@@ -1,0 +1,11 @@
+---
+import Icon from './Icon.astro';
+interface Props { href: string; icon: string; title: string; text: string; cta?: string; }
+const { href, icon, title, text, cta = 'Learn more' } = Astro.props;
+---
+<a class="card big reveal" href={href}>
+  <span class="ico"><Icon name={icon} /></span>
+  <h3>{title}</h3>
+  <p>{text}</p>
+  <span class="more">{cta} ›</span>
+</a>

@@ -1,6 +1,90 @@
 ---
 import Base from '../layouts/Base.astro';
+import ServiceCard from '../components/ServiceCard.astro';
+import Icon from '../components/Icon.astro';
+import FAQ from '../components/FAQ.astro';
+import CTA from '../components/CTA.astro';
+import { site } from '../data/site';
+
+const faqs = [
+  { q: 'What does Swift AI do?', a: 'Swift AI is an Indian AI and technology company. We find the repetitive work in your business and replace it with AI automations, provide experienced fractional CTOs for startups and SMEs, build software quickly with AI-assisted engineering, and run our own products, SingleQR and SingleStaff.' },
+  { q: 'What is a free AI Audit?', a: 'A free AI Audit is a 45-minute call where we study how your business runs, then send you a written opportunity map: which processes can be automated with AI, what each is worth in hours and rupees, and what to do first. There is no obligation to hire us afterwards.' },
+  { q: 'Who is Swift AI for?', a: 'SMEs and MSMEs that want to cut manual work with AI, and startup founders, technical or non-technical, who need a CTO or a fast, reliable product build.' },
+  { q: 'What is a fractional CTO and why hire one?', a: 'A fractional CTO is a senior technology leader who works with your company part-time. You get CTO-level decisions on architecture, hiring and delivery at a fraction of a full-time salary, and you can move to a full-time CTO later.' },
+  { q: 'How fast can you build software?', a: 'We use AI-assisted engineering, tight scoping and reusable components, which shortens most projects from months to weeks. Timelines depend on scope, and we confirm them in writing before starting.' },
+  { q: 'Is Swift AI a registered company?', a: `Yes. Swift AI is the brand of ${site.legalName}, a private limited company registered in India.` },
+];
+const schema = [{ '@context': 'https://schema.org', '@type': 'ProfessionalService', name: site.name, url: site.url, areaServed: 'IN',
+  description: 'AI automation, fractional CTO services, software development and SaaS products for Indian businesses.', parentOrganization: { '@id': `${site.url}/#org` } }];
 ---
-<Base title="Swift AI" description="Swift AI builds AI automations and provides fractional CTO services so growing businesses move faster with less cost." path="/">
-  <section class="hero"><div class="container"><h1>AI that works while you sleep.</h1></div></section>
+<Base title="Swift AI: AI Automation and Fractional CTO Services in India"
+  description="Swift AI helps SMEs and startups in India automate work with AI, hire fractional CTOs and ship software 10x faster. Book a free AI Audit."
+  path="/" schema={schema}>
+
+  <section class="hero">
+    <div class="container">
+      <span class="pill reveal">Free AI Audit for SMEs and MSMEs</span>
+      <h1 class="reveal d1">AI that works <span class="gradient">while you sleep.</span></h1>
+      <p class="lead reveal d2">Swift AI automates the repetitive work in your business, and gives startups the CTO they need to build fast.</p>
+      <div class="btns reveal d3" style="justify-content:center">
+        <a class="btn btn-primary" href="/book-ai-audit/">Book a free AI Audit</a>
+        <a class="btn btn-ghost" href="/get-started/">I'm a startup founder</a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="head center reveal"><span class="eyebrow">What we do</span><h2>Four ways we make you faster.</h2></div>
+      <div class="grid g2">
+        <ServiceCard href="/ai-automations/" icon="cpu" title="AI Automations" text="We learn how your business runs, then automate support, sales follow-ups, invoicing, reporting and more, wherever AI genuinely saves time." />
+        <ServiceCard href="/fractional-cto/" icon="compass" title="Fractional CTO" text="Senior technology leadership for startups and SMEs, part-time or full-time, without the cost of a full-time hire." />
+        <ServiceCard href="/products/" icon="box" title="Products" text="SingleQR and SingleStaff: software we built, run and stand behind." cta="Explore products" />
+        <ServiceCard href="/consultation/" icon="bolt" title="Consultation" text="Software development at 10x speed, using AI-assisted engineering and a ruthless focus on what matters." />
+      </div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="head reveal"><span class="eyebrow">How the free AI Audit works</span><h2>From “where do we start?”<br />to a clear plan in a week.</h2></div>
+      <div class="grid g3">
+        <div class="card reveal"><span class="num">1</span><h3>Discover</h3><p>A 45-minute call. We learn your processes, tools, team and where hours disappear.</p></div>
+        <div class="card reveal d1"><span class="num">2</span><h3>Map</h3><p>You get a written opportunity map: what to automate, the hours and rupees it saves, and the order to do it in.</p></div>
+        <div class="card reveal d2"><span class="num">3</span><h3>Automate</h3><p>If you want, we build the first automation fast. If not, the map is yours to keep.</p></div>
+      </div>
+      <div class="btns"><a class="btn btn-primary" href="/book-ai-audit/">Book your free audit</a><a class="btn btn-ghost" href="/ai-automations/roi-calculator/">Estimate your savings</a></div>
+    </div>
+  </section>
+
+  <section class="section dark">
+    <div class="container">
+      <div class="head reveal"><span class="eyebrow">Our products</span><h2>Software we run ourselves.</h2><p class="lead">We don't just advise. We build and operate products used by real businesses.</p></div>
+      <div class="grid g2">
+        <a class="card big reveal" href={site.products.singleqr} rel="noopener"><span class="ico"><Icon name="qr" /></span><h3>SingleQR</h3><p>One QR code for everything your business shares: links, payments and contact details, managed in one place.</p><span class="more">singleqr.in ›</span></a>
+        <a class="card big reveal d1" href={site.products.singlestaff} rel="noopener"><span class="ico"><Icon name="users" /></span><h3>SingleStaff</h3><p>Staffing and workforce management made simple, so hiring and managing people takes less effort.</p><span class="more">singlestaff.com ›</span></a>
+      </div>
+    </div>
+  </section>
+
+  <section class="section alt">
+    <div class="container">
+      <div class="head center reveal"><span class="eyebrow">CTO Network</span><h2>The right CTO, when you need one.</h2>
+        <p class="lead">We are building a network of experienced CTOs. Companies of any size can bring one in fractionally or full-time, and CTOs can offer their services.</p></div>
+      <div class="grid g2">
+        <div class="card reveal"><h3>I need a CTO</h3><p>Startups, SMEs and enterprises: tell us what you need and we'll introduce the right person.</p><a class="more" href="/hire-a-cto/">Hire a CTO ›</a></div>
+        <div class="card reveal d1"><h3>I am a CTO</h3><p>Experienced technology leaders: join the network and work with companies that need you.</p><a class="more" href="/join-as-a-cto/">Join as a CTO ›</a></div>
+      </div>
+      <div class="btns" style="justify-content:center"><a class="btn btn-ghost" href="/fractional-cto/cost-calculator/">What would a fractional CTO cost?</a></div>
+    </div>
+  </section>
+
+  <section class="section">
+    <div class="container">
+      <div class="head center reveal"><span class="eyebrow">Questions</span><h2>Straight answers.</h2></div>
+      <FAQ items={faqs} />
+    </div>
+  </section>
+
+  <CTA />
 </Base>

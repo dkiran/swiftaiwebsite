@@ -1,0 +1,15 @@
+---
+interface Props { title?: string; sub?: string; href?: string; label?: string; secondaryHref?: string; secondaryLabel?: string; }
+const { title = 'Find out what AI can automate in your business.', sub = 'A free 45-minute AI Audit. You leave with a written map of where automation saves you the most time and money.',
+  href = '/book-ai-audit/', label = 'Book a free AI Audit', secondaryHref, secondaryLabel } = Astro.props;
+---
+<section class="section dark center">
+  <div class="container reveal">
+    <h2>{title}</h2>
+    <p class="lead" style="margin-top:18px">{sub}</p>
+    <div class="btns">
+      <a class="btn btn-primary" href={href}>{label}</a>
+      {secondaryHref && <a class="btn btn-ghost" href={secondaryHref}>{secondaryLabel}</a>}
+    </div>
+  </div>
+</section>

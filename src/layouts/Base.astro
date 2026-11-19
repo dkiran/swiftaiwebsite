@@ -1,6 +1,7 @@
 ---
 import '../styles/global.css';
 import SEO from '../components/SEO.astro';
+import ChatWidget from '../components/ChatWidget.astro';
 import { site, nav } from '../data/site';
 interface Props { title: string; description: string; path: string; ogType?: 'website' | 'article'; schema?: object[]; }
 const props = Astro.props;
@@ -57,6 +58,7 @@ const year = new Date().getFullYear();
         </div>
       </div>
     </footer>
+    <ChatWidget />
     <script is:inline>
       (function () {
         var t = document.querySelector('.nav-toggle'), m = document.getElementById('menu');

@@ -1,0 +1,22 @@
+---
+import FormPage from '../../components/FormPage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import type { Field } from '../../scripts/form';
+const fields: Field[] = [
+  { name: 'name', label: 'Your name', type: 'text', required: true },
+  { name: 'company', label: 'Company', type: 'text', required: true },
+  { name: 'email', label: 'Work email', type: 'email', required: true },
+  { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
+  { name: 'engagement', label: 'Engagement', type: 'select', required: true, options: ['Fractional (part-time)', 'Full-time', 'Not sure'] },
+  { name: 'stage', label: 'Company stage', type: 'select', required: true, options: ['Idea', 'MVP', 'Early revenue', 'Scaling', 'Established business'] },
+  { name: 'domain', label: 'Domain or tech stack', type: 'text', placeholder: 'e.g. fintech, SaaS, AI, Node.js' },
+  { name: 'details', label: 'What should your CTO own?', type: 'textarea', required: true, placeholder: 'Product, team, architecture, security, vendor management…' },
+];
+---
+<FormPage title="Hire a CTO: Fractional or Full-Time"
+  description="Tell Swift AI what you need and we will connect you with an experienced CTO, fractional or full-time, for your startup, SME or company."
+  path="/hire-a-cto/" eyebrow="CTO Network" heading="Hire an experienced CTO, <span class='gradient'>your way.</span>"
+  lead="Fractional or full-time, for startups, SMEs and enterprises. Tell us what you need."
+  points={['Experienced technology leaders', 'Start part-time, go full-time later', 'We help you scope the role']}>
+  <LeadForm formName="Hire a CTO" fields={fields} submitLabel="Request a CTO" success="Thank you! We'll review your needs and reply within two business days." />
+</FormPage>

@@ -1,0 +1,21 @@
+---
+import FormPage from '../../components/FormPage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import type { Field } from '../../scripts/form';
+const fields: Field[] = [
+  { name: 'name', label: 'Your name', type: 'text', required: true },
+  { name: 'business', label: 'Business name', type: 'text', required: true },
+  { name: 'email', label: 'Work email', type: 'email', required: true },
+  { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
+  { name: 'industry', label: 'Industry', type: 'select', required: true, options: ['Retail / D2C', 'Manufacturing', 'Services / Agency', 'Healthcare', 'Education', 'Logistics', 'Real estate', 'Finance / Accounting', 'Other'] },
+  { name: 'team_size', label: 'Team size', type: 'select', required: true, options: ['1–10', '11–50', '51–200', '200+'] },
+  { name: 'bottleneck', label: 'What takes the most manual time today?', type: 'textarea', placeholder: 'e.g. following up leads, invoicing, answering the same customer questions…' },
+];
+---
+<FormPage title="Book a Free AI Audit for Your Business"
+  description="Book a free 45-minute AI Audit with Swift AI. Get a written map of what to automate in your SME or MSME, and what it will save."
+  path="/book-ai-audit/" eyebrow="Free AI Audit" heading="Find out what AI can <span class='gradient'>automate for you.</span>"
+  lead="A free 45-minute call for SMEs and MSMEs. We study how you work and send a written plan."
+  points={['No cost and no obligation', 'A written opportunity map with hours and rupees saved', 'Clear first step, whether or not you work with us', 'We reply within one business day']}>
+  <LeadForm formName="AI Audit" fields={fields} submitLabel="Book my free audit" success="Thank you! We'll contact you within one business day to schedule your free AI Audit." />
+</FormPage>

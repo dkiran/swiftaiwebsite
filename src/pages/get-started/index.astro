@@ -1,0 +1,24 @@
+---
+import FormPage from '../../components/FormPage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import type { Field } from '../../scripts/form';
+const fields: Field[] = [
+  { name: 'name', label: 'Your name', type: 'text', required: true },
+  { name: 'email', label: 'Email', type: 'email', required: true },
+  { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
+  { name: 'company', label: 'Startup name (if any)', type: 'text' },
+  { name: 'stage', label: 'Stage', type: 'select', required: true, options: ['Just an idea', 'Building the MVP', 'Launched, early users', 'Scaling'] },
+  { name: 'technical', label: 'Are you technical?', type: 'select', required: true, options: ['Yes', 'No', 'Somewhat'] },
+  { name: 'need', label: 'What do you need?', type: 'select', required: true, options: ['Fractional CTO', 'Build my product', 'AI automation', 'Not sure yet'] },
+  { name: 'budget', label: 'Monthly budget', type: 'select', options: ['Under ₹50,000', '₹50,000–₹2,00,000', '₹2,00,000–₹5,00,000', 'Above ₹5,00,000', 'Not decided'] },
+  { name: 'timeline', label: 'When do you want to start?', type: 'select', options: ['Immediately', 'Within a month', '1–3 months', 'Just exploring'] },
+  { name: 'requirement', label: 'Tell us about your requirement', type: 'textarea', required: true, placeholder: 'What are you building, and what do you need help with?' },
+];
+---
+<FormPage title="Startup Founders: Request an Appointment"
+  description="Technical or not, tell Swift AI what you are building and what you need. Request an appointment for a CTO, a product build or AI automation."
+  path="/get-started/" eyebrow="For startup founders" heading="Tell us what you're building. <span class='gradient'>We'll take it from there.</span>"
+  lead="Technical or not, share your requirement and request an appointment. We'll respond with honest advice."
+  points={['Fractional CTO, product build or AI automation', 'Honest advice, even if the answer is “not yet”', 'Appointment confirmed within one business day']}>
+  <LeadForm formName="Founder Appointment" fields={fields} submitLabel="Request appointment" success="Thank you! We've received your requirement and will confirm your appointment within one business day." />
+</FormPage>

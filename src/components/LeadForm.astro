@@ -1,0 +1,40 @@
+---
+import type { Field } from '../scripts/form';
+interface Props { formName: string; fields: Field[]; submitLabel: string; success?: string; }
+const { formName, fields, submitLabel, success } = Astro.props;
+---
+<form class="form" data-lead data-fields={JSON.stringify(fields)} data-success={success} novalidate>
+  <input type="hidden" name="_form" value={formName} />
+  <input type="hidden" name="_subject" value={`Swift AI website: ${formName}`} />
+  <div class="hp" aria-hidden="true"><label>Leave empty<input type="text" name="_gotcha" tabindex="-1" autocomplete="off" /></label></div>
+  <div class="row">
+    {fields.filter((f) => f.type !== 'textarea').map((f) => (
+      <div class="field" data-name={f.name}>
+        <label for={`${formName}-${f.name}`}>{f.label}{f.required && ' *'}</label>
+        {f.type === 'select' ? (
+          <select id={`${formName}-${f.name}`} name={f.name} required={f.required}>
+            <option value="">Select…</option>
+            {f.options!.map((o) => <option value={o}>{o}</option>)}
+          </select>
+        ) : (
+          <input id={`${formName}-${f.name}`} name={f.name} type={f.type} placeholder={f.placeholder} autocomplete={f.type === 'email' ? 'email' : f.type === 'tel' ? 'tel' : 'off'} />
+        )}
+        <span class="err" role="alert"></span>
+      </div>
+    ))}
+  </div>
+  {fields.filter((f) => f.type === 'textarea').map((f) => (
+    <div class="field" data-name={f.name}>
+      <label for={`${formName}-${f.name}`}>{f.label}{f.required && ' *'}</label>
+      <textarea id={`${formName}-${f.name}`} name={f.name} placeholder={f.placeholder}></textarea>
+      <span class="err" role="alert"></span>
+    </div>
+  ))}
+  <button class="btn btn-primary" type="submit">{submitLabel}</button>
+  <div class="form-msg" role="status" aria-live="polite"></div>
+  <p class="form-note">We use your details only to respond to this request. See our <a href="/privacy/">privacy policy</a>.</p>
+</form>
+<script>
+  import { init } from '../scripts/form';
+  init();
+</script>

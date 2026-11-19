@@ -1,0 +1,22 @@
+---
+import FormPage from '../../components/FormPage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import type { Field } from '../../scripts/form';
+const fields: Field[] = [
+  { name: 'name', label: 'Full name', type: 'text', required: true },
+  { name: 'email', label: 'Email', type: 'email', required: true },
+  { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
+  { name: 'linkedin', label: 'LinkedIn profile', type: 'url', required: true, placeholder: 'https://linkedin.com/in/…' },
+  { name: 'experience', label: 'Years of experience', type: 'select', required: true, options: ['8–12', '12–15', '15–20', '20+'] },
+  { name: 'availability', label: 'Availability', type: 'select', required: true, options: ['Fractional', 'Full-time', 'Both'] },
+  { name: 'domains', label: 'Domains and technologies', type: 'text', required: true, placeholder: 'e.g. fintech, healthtech, AI/ML, cloud' },
+  { name: 'bio', label: 'Tell us about your experience', type: 'textarea', required: true, placeholder: 'Companies, teams you have led, products you have shipped…' },
+];
+---
+<FormPage title="Join the Swift AI CTO Network"
+  description="Experienced CTOs: register with Swift AI to offer fractional or full-time leadership to startups, SMEs and companies looking for technology leaders."
+  path="/join-as-a-cto/" eyebrow="For CTOs" heading="Join a network of <span class='gradient'>technology leaders.</span>"
+  lead="Register your experience and work with companies that need a CTO, fractionally or full-time."
+  points={['Choose fractional, full-time or both', 'Matched with companies that fit your domain', 'Applications are reviewed by our team']}>
+  <LeadForm formName="CTO Registration" fields={fields} submitLabel="Apply to join" success="Thank you! Our team will review your application and get in touch." />
+</FormPage>

@@ -1,0 +1,18 @@
+---
+import FormPage from '../../components/FormPage.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { site } from '../../data/site';
+import type { Field } from '../../scripts/form';
+const fields: Field[] = [
+  { name: 'name', label: 'Your name', type: 'text', required: true },
+  { name: 'email', label: 'Email', type: 'email', required: true },
+  { name: 'message', label: 'How can we help?', type: 'textarea', required: true },
+];
+---
+<FormPage title="Contact Swift AI Tech Solutions"
+  description="Contact Swift AI Tech Solutions Private Limited about AI automation, fractional CTO services, software development or our products."
+  path="/contact/" eyebrow="Contact" heading="Let's talk."
+  lead="Questions about AI automation, CTO services or our products? Send us a message."
+  points={[`Email: ${site.email}`, `Phone: ${site.phone}`, `${site.legalName}, ${site.address}`]}>
+  <LeadForm formName="Contact" fields={fields} submitLabel="Send message" />
+</FormPage>

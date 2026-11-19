@@ -1,0 +1,44 @@
+---
+import Base from '../../layouts/Base.astro';
+import ServiceHero from '../../components/ServiceHero.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
+const faqs = [
+  { q: 'How can software be built 10x faster?', a: 'By removing waste rather than rushing: sharply scoped requirements, AI-assisted coding and testing, reusable components and short feedback loops. The gain comes mostly from skipping work that doesn\'t matter and automating the work that does.' },
+  { q: 'Is faster software lower quality?', a: 'No. We keep automated tests, code review and security checks in every project. AI speeds up the writing; engineers remain responsible for the result.' },
+  { q: 'What kinds of software do you build?', a: 'Web apps, mobile apps, internal tools, integrations, SaaS products and AI features. If it needs engineering judgment, it fits a consultation.' },
+  { q: 'How do consultations work?', a: 'You describe the problem. We agree scope, timeline and price in writing, then deliver in short cycles you can see and use.' },
+];
+const schema = [serviceSchema('Software Development Consultation', 'AI-assisted software development and technology consultation for startups and SMEs.', '/consultation/'),
+  breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Consultation', path: '/consultation/' }])];
+---
+<Base title="Software Development Consultation: Build 10x Faster"
+  description="Swift AI builds software with AI-assisted engineering, so web apps, mobile apps and SaaS products reach users in weeks instead of months."
+  path="/consultation/" schema={schema}>
+  <ServiceHero eyebrow="Consultation" title="Software development at <span class='gradient'>10x speed.</span>"
+    lead="AI-assisted engineering, ruthless scoping and short feedback loops. Weeks, not months."
+    ctaLabel="Request an appointment" ctaHref="/get-started/" />
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Why it's faster</span><h2>Less waste. More shipped.</h2></div>
+    <div class="grid g3">
+      <div class="card reveal"><h3>Scope what matters</h3><p>We cut the first version to what proves the idea and delivers value.</p></div>
+      <div class="card reveal d1"><h3>AI-assisted engineering</h3><p>AI writes drafts, tests and boilerplate. Senior engineers design, review and decide.</p></div>
+      <div class="card reveal d2"><h3>Ship in cycles</h3><p>You see and use working software every week, so problems surface early.</p></div>
+    </div>
+  </div></section>
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Process</span><h2>From idea to launch.</h2></div>
+    <div class="grid g4">
+      <div class="card reveal"><span class="num">1</span><h3>Understand</h3><p>Goals, users and constraints.</p></div>
+      <div class="card reveal d1"><span class="num">2</span><h3>Plan</h3><p>Scope, timeline and price agreed in writing.</p></div>
+      <div class="card reveal d2"><span class="num">3</span><h3>Build</h3><p>Weekly working releases.</p></div>
+      <div class="card reveal d3"><span class="num">4</span><h3>Launch</h3><p>Deploy, monitor, hand over or keep improving.</p></div>
+    </div>
+  </div></section>
+  <section class="section alt"><div class="container">
+    <div class="head center reveal"><span class="eyebrow">Questions</span><h2>Building fast, answered.</h2></div>
+    <FAQ items={faqs} />
+  </div></section>
+  <CTA title="Have something to build?" sub="Tell us what you need. We'll respond with an honest scope and timeline." href="/get-started/" label="Request an appointment" />
+</Base>

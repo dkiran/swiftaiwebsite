@@ -1,0 +1,64 @@
+---
+import Base from '../../layouts/Base.astro';
+import ServiceHero from '../../components/ServiceHero.astro';
+import Icon from '../../components/Icon.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
+const faqs = [
+  { q: 'What is AI automation?', a: 'AI automation uses artificial intelligence to carry out repetitive business tasks that normally need a person, such as answering customer questions, sorting documents, following up leads or preparing reports. Unlike old rule-based automation, it can handle unstructured inputs like emails, PDFs and chat messages.' },
+  { q: 'Which business processes can be automated with AI?', a: 'Common starting points are customer support, lead qualification and follow-up, invoicing and payment reminders, data entry from documents, HR screening and onboarding, and recurring management reports. The free AI Audit ranks these for your business by time saved and effort to build.' },
+  { q: 'How much does AI automation cost for an SME?', a: 'It depends on the process and your existing tools. Many first automations are small, focused projects rather than large programmes. Use our ROI calculator for an indicative estimate, then book a free AI Audit for a concrete figure.' },
+  { q: 'Do we need to change our existing software?', a: 'Usually not. We connect AI to the tools you already use, such as WhatsApp, email, Google Workspace, Tally, Zoho and your CRM, so your team keeps working the way it does today.' },
+  { q: 'Is our business data safe?', a: 'We work with the minimum data needed, use access controls, and agree data handling with you in writing before we start. We can use providers and settings that do not train on your data.' },
+];
+const schema = [serviceSchema('AI Automations', 'Business process automation using AI for SMEs and startups in India.', '/ai-automations/'),
+  breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Automations', path: '/ai-automations/' }])];
+const areas = [
+  ['mail', 'Customer support', 'AI answers common questions on WhatsApp, email and chat, and hands harder cases to your team with full context.'],
+  ['users', 'Sales and lead follow-up', 'Qualify enquiries instantly, send timely follow-ups, update the CRM and remind your team who to call.'],
+  ['chart', 'Finance and invoicing', 'Read invoices and bills, raise invoices, chase payments and prepare reconciliation-ready data.'],
+  ['clock', 'HR and operations', 'Screen resumes, schedule interviews, onboard staff and keep routine approvals moving.'],
+  ['code', 'Reporting and insights', 'Pull numbers from your tools into a clear daily or weekly summary, without anyone building it by hand.'],
+  ['shield', 'Documents and compliance', 'Extract, check and file information from contracts, forms and certificates, with a human review where it matters.'],
+];
+---
+<Base title="AI Automation Services for SMEs and MSMEs in India"
+  description="Swift AI studies how your business runs and automates support, sales, finance and operations with AI. Start with a free AI Audit."
+  path="/ai-automations/" schema={schema}>
+  <ServiceHero eyebrow="AI Automations" title="Automate the work <span class='gradient'>nobody enjoys.</span>"
+    lead="We understand your business first, then implement AI automations wherever they genuinely save time and money."
+    ctaLabel="Book a free AI Audit" ctaHref="/book-ai-audit/" secondaryLabel="Calculate your savings" secondaryHref="/ai-automations/roi-calculator/" />
+
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">What we automate</span><h2>Start where the hours go.</h2>
+      <p class="lead">AI automation means software that does repetitive business tasks for you, including the messy ones that involve emails, documents and conversations. These are the areas where we usually find the biggest wins.</p></div>
+    <div class="grid g3">
+      {areas.map(([i, t, d], n) => <div class={`card reveal d${n % 3}`}><span class="ico"><Icon name={i} /></span><h3>{t}</h3><p>{d}</p></div>)}
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">How we work</span><h2>Understand first. Automate second.</h2></div>
+    <div class="grid g4">
+      <div class="card reveal"><span class="num">1</span><h3>Audit</h3><p>A free 45-minute call and a written opportunity map.</p></div>
+      <div class="card reveal d1"><span class="num">2</span><h3>Prioritise</h3><p>We rank ideas by value and effort and pick the first one worth building.</p></div>
+      <div class="card reveal d2"><span class="num">3</span><h3>Build</h3><p>A working automation in your real tools, fast, with your team in the loop.</p></div>
+      <div class="card reveal d3"><span class="num">4</span><h3>Improve</h3><p>We measure results, fix edge cases and move on to the next automation.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section alt"><div class="container">
+    <div class="head center reveal"><span class="eyebrow">Principles</span><h2>Automation that earns its place.</h2></div>
+    <div class="grid g2">
+      <ul class="checks reveal"><li>No automation for its own sake. If it doesn't save real time or money, we say so.</li><li>Humans stay in control of decisions that matter.</li><li>Works inside the tools your team already uses.</li></ul>
+      <ul class="checks reveal d1"><li>Clear measures of success agreed before we build.</li><li>Your data stays yours, with handling agreed in writing.</li><li>Documented, so you are never locked in.</li></ul>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head center reveal"><span class="eyebrow">Questions</span><h2>AI automation, answered.</h2></div>
+    <FAQ items={faqs} />
+  </div></section>
+  <CTA />
+</Base>

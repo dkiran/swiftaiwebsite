@@ -1,0 +1,30 @@
+---
+import Base from '../../layouts/Base.astro';
+import ServiceHero from '../../components/ServiceHero.astro';
+import Icon from '../../components/Icon.astro';
+import CTA from '../../components/CTA.astro';
+import { site } from '../../data/site';
+import { breadcrumbSchema } from '../../lib/schema';
+const apps = [
+  { icon: 'qr', name: 'SingleQR', url: site.products.singleqr, host: 'singleqr.in', text: 'One QR code for everything your business shares, managed in one place.' },
+  { icon: 'users', name: 'SingleStaff', url: site.products.singlestaff, host: 'singlestaff.com', text: 'Simple staffing and workforce management, so hiring and managing people takes less effort.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Products', path: '/products/' }]),
+  ...apps.map((a) => ({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: a.name, url: a.url, applicationCategory: 'BusinessApplication', operatingSystem: 'Web', description: a.text, publisher: { '@id': `${site.url}/#org` } }))];
+---
+<Base title="Products: SingleQR and SingleStaff by Swift AI"
+  description="Explore SingleQR and SingleStaff, software products built and operated by Swift AI Tech Solutions Private Limited for Indian businesses."
+  path="/products/" schema={schema}>
+  <ServiceHero eyebrow="Products" title="Software we build <span class='gradient'>and run.</span>"
+    lead="Our own products prove how we work: shipped fast, used by real businesses, improved constantly."
+    ctaLabel="Talk to us" ctaHref="/contact/" />
+  <section class="section alt"><div class="container">
+    <div class="grid g2">
+      {apps.map((a, i) => (
+        <div class={`card big reveal d${i}`}><span class="ico"><Icon name={a.icon} /></span><h3>{a.name}</h3><p>{a.text}</p>
+          <a class="btn btn-primary" style="align-self:flex-start;margin-top:10px" href={a.url} rel="noopener">Visit {a.host}</a></div>
+      ))}
+    </div>
+  </div></section>
+  <CTA title="Want a product like these built for you?" sub="The same team and the same speed, applied to your idea." href="/get-started/" label="Request an appointment" />
+</Base>

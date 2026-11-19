@@ -1,0 +1,15 @@
+---
+interface Props { eyebrow: string; title: string; lead: string; ctaLabel: string; ctaHref: string; secondaryLabel?: string; secondaryHref?: string; }
+const { eyebrow, title, lead, ctaLabel, ctaHref, secondaryLabel, secondaryHref } = Astro.props;
+---
+<section class="hero">
+  <div class="container">
+    <span class="pill reveal">{eyebrow}</span>
+    <h1 class="reveal d1" set:html={title} />
+    <p class="lead reveal d2">{lead}</p>
+    <div class="btns reveal d3" style="justify-content:center">
+      <a class="btn btn-primary" href={ctaHref}>{ctaLabel}</a>
+      {secondaryHref && <a class="btn btn-ghost" href={secondaryHref}>{secondaryLabel}</a>}
+    </div>
+  </div>
+</section>

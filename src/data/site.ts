@@ -3,6 +3,7 @@ export const site = {
   name: 'Swift AI',
   legalName: 'Swift AI Tech Solutions Private Limited',
   url: 'https://swiftai.in', // PLACEHOLDER: keep in sync with astro.config.mjs
+  slogan: 'Business at the speed of AI.',
   tagline: 'AI automation and fractional CTO services that make businesses faster.',
   email: 'hello@swiftai.in', // PLACEHOLDER
   phone: '+91 00000 00000', // PLACEHOLDER

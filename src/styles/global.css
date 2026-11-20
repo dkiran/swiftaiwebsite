@@ -72,7 +72,7 @@ p { margin: 0 0 1em; }
 .nav .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
 .logo { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', 'Segoe UI', sans-serif; font-weight: 200; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; line-height: 1; }
 .logo:hover { text-decoration: none; }
-.logo i { width: 22px; height: 22px; border-radius: 7px; background: linear-gradient(135deg, var(--blue), oklch(62% .2 285)); display: inline-block; }
+.logo img { height: 28px; width: auto; display: block; flex: none; }
 .nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; }
 .nav ul a { color: var(--ink); opacity: .8; font-size: .9rem; }
 .nav ul a:hover { opacity: 1; text-decoration: none; }

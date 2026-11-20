@@ -7,7 +7,7 @@ const canonical = new URL(path, site.url).href;
 const og = new URL('/og-default.png', site.url).href;
 const base = [
   { '@context': 'https://schema.org', '@type': 'Organization', '@id': `${site.url}/#org`, name: site.name, legalName: site.legalName, url: site.url,
-    logo: `${site.url}/favicon.svg`, description: site.tagline, slogan: site.slogan, areaServed: 'Worldwide',
+    logo: `${site.url}/logo-lotus.png`, description: site.tagline, slogan: site.slogan, areaServed: 'Worldwide',
     ...(founder.name ? { founder: { '@type': 'Person', name: founder.name, jobTitle: founder.title, ...(founder.linkedin ? { sameAs: [founder.linkedin] } : {}) } } : {}),
     sameAs: Object.values(site.social).filter(Boolean),
     taxID: site.gstin, telephone: site.phoneHref,

@@ -13,6 +13,15 @@ SingleQR keeps running as it does today. We add a separate nginx site file, a se
 - ZeptoMail: add and verify your sending domain (swift-ai.in), create a **Mail Agent**, and copy its **Send Mail token**. Note which data centre you use (`.com`, `.in`, `.eu`): it decides `ZEPTOMAIL_API_HOST`.
 - Optional, for the chat assistant: an Anthropic API key with a monthly spend limit.
 
+## 0b. Amazon Linux (ec2-user) differences
+If your instance runs Amazon Linux, use these instead of the Ubuntu-style commands below. Everywhere the guide says `ubuntu@`, use `ec2-user@`.
+- **nginx config:** there is no `sites-available` or `sites-enabled`. Copy the file to `/etc/nginx/conf.d/swiftai.conf` (nginx already includes everything in `conf.d`), then `sudo nginx -t && sudo systemctl reload nginx`. Leave SingleQR's existing file alone.
+- **Node for the service:** the service runs as its own user and cannot use a Node installed under your home folder (for example nvm). Run `which node`. If it prints `/usr/bin/node` or `/usr/local/bin/node`, you are fine. If it is under `/home/ec2-user/...`, run `sudo cp "$(which node)" /usr/local/bin/node` and set `ExecStart=/usr/local/bin/node /opt/swiftai-api/main.mjs` in the service file.
+- **Service user:** `sudo useradd --system --no-create-home --shell /sbin/nologin swiftai`
+- **HTTPS (certbot):** `sudo dnf install -y augeas-libs python3-pip && sudo python3 -m venv /opt/certbot && sudo /opt/certbot/bin/pip install certbot certbot-nginx && sudo ln -sf /opt/certbot/bin/certbot /usr/bin/certbot`, then `sudo certbot --nginx -d swift-ai.in -d www.swift-ai.in`. Renewal: `echo "0 3 * * * root /opt/certbot/bin/certbot renew -q" | sudo tee /etc/cron.d/certbot-renew`.
+- **MySQL:** the client is `mysql` and the service is `mysqld` or `mariadb` (check with `systemctl list-units | grep -Ei "mysql|maria"`). If MySQL runs in Docker, put `docker exec -i <container>` in front of `mysql` commands.
+- **Installing nginx** (if it is not there yet): `sudo dnf install -y nginx && sudo systemctl enable --now nginx`.
+
 ## 1. Server basics (once)
 1. Security group: allow 22 (your IP only), 80 and 443 (anywhere). Do NOT open 3100 or 3306 to the internet.
 2. Elastic IP attached to the instance (if SingleQR already uses one, you do not need another). Point `A` records for `swift-ai.in` and `www` at the instance's IP.

@@ -10,7 +10,8 @@ const base = [
     logo: `${site.url}/favicon.svg`, description: site.tagline, slogan: site.slogan, areaServed: 'IN',
     ...(founder.name ? { founder: { '@type': 'Person', name: founder.name, jobTitle: founder.title } } : {}),
     sameAs: Object.values(site.social).filter(Boolean),
-    contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email, areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
+    taxID: site.gstin, telephone: site.phoneHref,
+    contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email, telephone: site.phoneHref, areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
   { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, publisher: { '@id': `${site.url}/#org` } },
 ];
 const all = [...base, ...schema];

@@ -13,7 +13,7 @@ npm run build && npm run check   # build + SEO/AEO structure checks on dist/
 ## Before launch: replace placeholders
 | What | Where |
 |---|---|
-| Domain (`swiftai.in` is a placeholder) | `astro.config.mjs`, `src/data/site.ts`, `public/robots.txt` |
+| Domain (`swift-ai.in` is assumed from your email domain; confirm) | `astro.config.mjs`, `src/data/site.ts`, `public/robots.txt` |
 | Email, phone, address, CIN, GSTIN, social links | `src/data/site.ts` |
 | **Calculator rates (illustrative only!)** | `src/data/pricing.ts` |
 | Chat assistant facts | `src/data/knowledge.ts` |

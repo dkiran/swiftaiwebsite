@@ -17,4 +17,4 @@ Allow: /
 User-agent: Google-Extended
 Allow: /
 
-Sitemap: https://swiftai.in/sitemap-index.xml
+Sitemap: https://swift-ai.in/sitemap-index.xml

@@ -17,6 +17,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', 
     <h2>{founder.name ? `Led by ${founder.name}, ${founder.title}` : 'Founder-led'}</h2>
     <p>Swift AI is led by {founder.name || 'its founder'}, a technology leader with:</p>
     <ul>{founder.facts.map((f) => <li>{f}</li>)}</ul>
+    <p>{founder.name || 'Our founder'} is the founder of <a href={founder.roles[0].url} rel="noopener">{founder.roles[0].org}</a> and the CTO of <a href={founder.roles[1].url} rel="noopener">{founder.roles[1].org}</a>.</p>
     <p>Our first focus is <a href="/transportation/">transportation, logistics and mobility technology</a>, where that experience matters most.</p>
     <h2>What we believe</h2>
     <ul><li><b>Understand before building.</b> Technology should start from the business problem.</li>
@@ -26,7 +27,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', 
     <h2>The CTO network</h2>
     <p>We are building a network of experienced CTOs so that startups, SMEs and larger companies can find technology leadership, fractionally or full-time. Experienced CTOs can <a href="/join-as-a-cto/">apply to join</a>, and companies can <a href="/hire-a-cto/">request a CTO</a>.</p>
     <h2>Company details</h2>
-    <p>{site.legalName}<br />{site.address}<br />{site.cin}<br />{site.gst}<br />Email: <a href={`mailto:${site.email}`}>{site.email}</a></p>
+    <p>{site.legalName}<br />{site.address}<br />GSTIN: {site.gstin}<br />Email: <a href={`mailto:${site.email}`}>{site.email}</a><br />Phone: <a href={`tel:${site.phoneHref}`}>{site.phone}</a></p>
   </div></div></section>
   <CTA />
 </Base>

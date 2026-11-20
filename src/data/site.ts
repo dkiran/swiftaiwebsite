@@ -2,14 +2,14 @@
 export const site = {
   name: 'Swift AI',
   legalName: 'Swift AI Tech Solutions Private Limited',
-  url: 'https://swiftai.in', // PLACEHOLDER: keep in sync with astro.config.mjs
+  url: 'https://swift-ai.in', // ASSUMED from the email domain swift-ai.in: confirm; keep in sync with astro.config.mjs and public/robots.txt
   slogan: 'Business at the speed of AI.',
   tagline: 'AI automation and fractional CTO services for transportation, logistics and growing businesses in India.',
-  email: 'hello@swiftai.in', // PLACEHOLDER
-  phone: '+91 00000 00000', // PLACEHOLDER
+  email: 'hello@swift-ai.in',
+  phone: '+91 8008575757',
+  phoneHref: '+918008575757',
   address: 'India', // PLACEHOLDER: registered office address
-  cin: 'CIN: to be added', // PLACEHOLDER
-  gst: 'GSTIN: to be added', // PLACEHOLDER
+  gstin: '29ABTCS1111K1Z0',
   social: { linkedin: '', x: '' }, // PLACEHOLDER: add profile URLs
   products: {
     singleqr: 'https://singleqr.in',
@@ -21,13 +21,17 @@ export const site = {
 export const founder = {
   name: 'D Kiran Kumar',
   title: 'Founder',
-  product: { name: 'BharatSelfDrive.com', url: 'https://bharatselfdrive.com', note: 'a self-drive platform' },
+  roles: [
+    { org: 'SingleQR', role: 'Founder', url: 'https://singleqr.in' },
+    { org: 'BharatSelfDrive.com', role: 'CTO', url: 'https://www.bharatselfdrive.com' },
+  ],
   facts: [
     '20+ years of experience in software development',
     'Experience as a fractional CTO for startups and companies',
     'CTO experience in transportation, including mobile app development for ride-hailing-style products',
     'Hands-on experience with GPS telematics',
-    'Product experience includes BharatSelfDrive.com, a self-drive platform',
+    'Founder of SingleQR',
+    'CTO of BharatSelfDrive.com, a self-drive platform',
   ],
 } as const;
 

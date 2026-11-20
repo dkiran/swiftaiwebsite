@@ -1,6 +1,6 @@
 ---
 title: "10 Business Processes Every MSME Can Automate with AI"
-description: "Ten practical processes MSMEs in India can automate with AI today, from lead follow-up to invoicing, with what to expect from each."
+description: "Ten practical processes MSMEs can automate with AI today, from lead follow-up to invoicing, with what to expect from each."
 tldr: "MSMEs get the fastest wins by automating high-volume, repetitive work: lead follow-up, customer queries, invoicing, payment reminders, data entry, scheduling, reporting, resume screening, inventory alerts and document checks."
 date: 2026-11-05
 category: "AI Automation"

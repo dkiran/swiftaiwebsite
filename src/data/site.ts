@@ -4,7 +4,7 @@ export const site = {
   legalName: 'Swift AI Tech Solutions Private Limited',
   url: 'https://swift-ai.in', // ASSUMED from the email domain swift-ai.in: confirm; keep in sync with astro.config.mjs and public/robots.txt
   slogan: 'Business at the speed of AI.',
-  tagline: 'AI automation and fractional CTO services for transportation, logistics and growing businesses in India.',
+  tagline: 'AI automation and fractional CTO services for transportation, logistics and growing businesses worldwide.',
   email: 'hello@swift-ai.in',
   phone: '+91 8008575757',
   phoneHref: '+918008575757',

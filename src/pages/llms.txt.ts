@@ -6,7 +6,7 @@ export async function GET() {
   const u = (p: string) => new URL(p, site.url).href;
   const body = `# ${site.name}
 
-> ${site.slogan} ${site.name} is the brand of ${site.legalName}, an Indian AI and technology company. We help SMEs, MSMEs and startups automate work with AI, provide fractional and full-time CTOs, build software quickly with AI-assisted engineering, and run our own products.
+> ${site.slogan} ${site.name} is the brand of ${site.legalName}, an AI and technology company based in India that serves businesses worldwide. We help SMEs, MSMEs and startups automate work with AI, provide fractional and full-time CTOs, build software quickly with AI-assisted engineering, and run our own products.
 
 ## Services
 - [AI Automations](${u('/ai-automations/')}): we study how a business runs, then implement AI automations (support, sales follow-up, finance, HR, reporting) wherever they save time and money. Start with a free AI Audit.
@@ -31,7 +31,7 @@ ${posts.map((p) => `- [${p.data.title}](${u(`/blog/${p.id}/`)}): ${p.data.descri
 - Legal name: ${site.legalName}
 - Office: ${site.address}
 - Registered office: ${site.registeredAddress}
-- Country: India
+- Based in: India. Serves clients worldwide.
 - Contact: ${u('/contact/')}
 `;
   return new Response(body, { headers: { 'Content-Type': 'text/plain; charset=utf-8' } });

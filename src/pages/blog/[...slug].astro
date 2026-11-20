@@ -22,7 +22,7 @@ const service = d.category === 'AI Automation' ? { href: '/ai-automations/', lab
 const schema = [
   { '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.description, datePublished: d.date.toISOString(), dateModified: d.date.toISOString(),
     author: { '@type': 'Organization', name: site.name, url: site.url }, publisher: { '@id': `${site.url}/#org` },
-    mainEntityOfPage: new URL(path, site.url).href, image: `${site.url}/og-default.png`, articleSection: d.category, inLanguage: 'en-IN' },
+    mainEntityOfPage: new URL(path, site.url).href, image: `${site.url}/og-default.png`, articleSection: d.category, inLanguage: 'en' },
   breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Blog', path: '/blog/' }, { name: d.title, path }]),
 ];
 ---

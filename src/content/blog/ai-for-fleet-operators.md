@@ -1,6 +1,6 @@
 ---
 title: "How AI Helps Fleet and Transport Operators Cut Manual Work"
-description: "Practical ways fleet, logistics and transport operators in India can use AI to reduce manual work in support, documents, billing and reporting."
+description: "Practical ways fleet, logistics and transport operators can use AI to reduce manual work in support, documents, billing and reporting."
 tldr: "Fleet and transport operators get the fastest AI wins in repetitive, document-heavy work: routine customer and driver queries, document checks, trip-to-invoice matching, proof-of-delivery processing and daily reports. Start with one high-volume process, measure the time saved, then expand."
 date: 2026-11-19
 category: "Transportation Tech"

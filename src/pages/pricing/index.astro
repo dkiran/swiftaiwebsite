@@ -16,7 +16,7 @@ const faqs = [
   { q: 'Are the prices final?', a: 'The rates above are our current rates in Indian rupees. Examples are illustrative, and each engagement is confirmed in writing. Taxes are charged as applicable.' },
 ];
 const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing/' }]),
-  { '@context': 'https://schema.org', '@type': 'Service', name: 'Fractional CTO services', url: `${site.url}/pricing/`, provider: { '@id': `${site.url}/#org` }, areaServed: { '@type': 'Country', name: 'India' },
+  { '@context': 'https://schema.org', '@type': 'Service', name: 'Fractional CTO services', url: `${site.url}/pricing/`, provider: { '@id': `${site.url}/#org` }, areaServed: 'Worldwide',
     offers: [{ '@type': 'Offer', name: 'AI automation build', priceCurrency: 'INR', priceSpecification: { '@type': 'UnitPriceSpecification', price: rates.aiBuildPerHour, priceCurrency: 'INR', unitText: 'HOUR' } },
       { '@type': 'Offer', name: 'Fractional CTO, standard rate', priceCurrency: 'INR', priceSpecification: { '@type': 'UnitPriceSpecification', price: rates.standardPerHour, priceCurrency: 'INR', unitText: 'HOUR' } },
       { '@type': 'Offer', name: 'Fractional CTO, early-stage startup rate (from)', priceCurrency: 'INR', priceSpecification: { '@type': 'UnitPriceSpecification', price: rates.startupFromPerHour, priceCurrency: 'INR', unitText: 'HOUR' } }] }];

@@ -1,6 +1,6 @@
 ---
-title: "What Is AI Automation? A Practical Guide for Indian SMEs"
-description: "AI automation uses AI to do repetitive business work. Learn how it differs from old automation, where SMEs in India start, and what to avoid."
+title: "What Is AI Automation? A Practical Guide for SMEs"
+description: "AI automation uses AI to do repetitive business work. Learn how it differs from old automation, where SMEs start, and what to avoid."
 tldr: "AI automation uses artificial intelligence to handle repetitive business tasks, including messy ones like emails, PDFs and chats, that older rule-based software could not. Start with one high-volume, low-risk process, measure the time saved, then expand."
 date: 2026-11-02
 category: "AI Automation"
@@ -32,7 +32,7 @@ Businesses have automated for decades. What changed is the kind of work software
 
 The two work best together. Rules handle the predictable parts and AI handles the parts that vary.
 
-## Where Indian SMEs usually start
+## Where SMEs usually start
 
 Across small and mid-sized businesses, the same areas come up again and again:
 

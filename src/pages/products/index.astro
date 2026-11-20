@@ -13,7 +13,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Products
   ...apps.map((a) => ({ '@context': 'https://schema.org', '@type': 'SoftwareApplication', name: a.name, url: a.url, applicationCategory: 'BusinessApplication', operatingSystem: 'Web', description: a.text, publisher: { '@id': `${site.url}/#org` } }))];
 ---
 <Base title="Products: SingleQR and SingleStaff by Swift AI"
-  description="Explore SingleQR and SingleStaff, software products built and operated by Swift AI Tech Solutions Private Limited for Indian businesses."
+  description="Explore SingleQR and SingleStaff, software products built and operated by Swift AI Tech Solutions Private Limited for businesses worldwide."
   path="/products/" schema={schema}>
   <ServiceHero eyebrow="Products" title="Software we build <span class='gradient'>and run.</span>"
     lead="Our own products show how we work: we build software, run it and keep improving it."

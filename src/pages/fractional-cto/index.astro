@@ -7,14 +7,14 @@ import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
 const faqs = [
   { q: 'What is a fractional CTO?', a: 'A fractional CTO is an experienced chief technology officer who works with your company for a fixed part of their time, for example one or two days a week. They own technology strategy, architecture, hiring and delivery, without the cost of a full-time executive.' },
   { q: 'When should a startup hire a fractional CTO?', a: 'When you need senior technical leadership but not yet a full-time CTO: before building the first product, when an outsourced build needs oversight, when the engineering team lacks direction, or when you are preparing for fundraising and technical due diligence.' },
-  { q: 'How much does a fractional CTO cost in India?', a: 'Cost depends on hours per week, seniority and whether the role is advisory or hands-on. Use our cost calculator for an indicative monthly range and a comparison with a full-time CTO.' },
+  { q: 'How much does a fractional CTO cost?', a: 'Cost depends on hours per week, seniority and whether the role is advisory or hands-on. Use our cost calculator for an indicative monthly range and a comparison with a full-time CTO.' },
   { q: 'Can a fractional CTO become full-time later?', a: 'Yes. Many engagements start part-time and convert to a full-time role as the company grows, or the fractional CTO helps you recruit and hand over to your permanent CTO.' },
   { q: 'I am not technical. Is this right for me?', a: 'It is especially useful for non-technical founders. Your CTO translates business goals into technical plans, evaluates vendors and developers on your behalf, and keeps you from costly mistakes.' },
 ];
-const schema = [serviceSchema('Fractional CTO Services', 'Part-time and full-time CTO leadership for startups and SMEs in India.', '/fractional-cto/'),
+const schema = [serviceSchema('Fractional CTO Services', 'Part-time and full-time CTO leadership for startups and SMEs worldwide.', '/fractional-cto/'),
   breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fractional CTO', path: '/fractional-cto/' }])];
 ---
-<Base title="Fractional CTO Services for Startups and SMEs in India"
+<Base title="Fractional CTO Services for Startups and SMEs"
   description="Hire an experienced fractional CTO from Swift AI: technology strategy, architecture, hiring and delivery, part-time or full-time."
   path="/fractional-cto/" schema={schema}>
   <ServiceHero eyebrow="Fractional CTO" title="A CTO for your company, <span class='gradient'>without the full-time cost.</span>"

@@ -8,7 +8,7 @@ const blog = defineCollection({
     description: z.string().min(70).max(160),
     tldr: z.string().min(40),
     date: z.coerce.date(),
-    category: z.enum(['AI Automation', 'Fractional CTO']),
+    category: z.enum(['AI Automation', 'Fractional CTO', 'Transportation Tech']),
     readingMinutes: z.number().int().positive(),
     faq: z.array(z.object({ q: z.string(), a: z.string() })).optional(),
   }),

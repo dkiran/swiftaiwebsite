@@ -1,0 +1,66 @@
+---
+import Base from '../../../layouts/Base.astro';
+import FAQ from '../../../components/FAQ.astro';
+import { questions, areaLabels, recommendations } from '../../../lib/healthcheck';
+import { site } from '../../../data/site';
+import { breadcrumbSchema } from '../../../lib/schema';
+const faqs = [
+  { q: 'What is the fleet technology health check?', a: 'It is a free 2-minute, 8-question self-assessment that scores how well your tracking data, dispatch, driver onboarding, billing, support, reporting, mobile app and compliance tracking are working, and shows the three areas to fix first.' },
+  { q: 'Is my data stored or sent anywhere?', a: 'No. The quiz runs in your browser and your answers are not sent to us unless you choose to book a call afterwards.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Transportation', path: '/transportation/' }, { name: 'Health check', path: '/transportation/health-check/' }]),
+  { '@context': 'https://schema.org', '@type': 'WebApplication', name: 'Fleet Technology Health Check', url: `${site.url}/transportation/health-check/`, applicationCategory: 'BusinessApplication', operatingSystem: 'Web', offers: { '@type': 'Offer', price: '0', priceCurrency: 'INR' }, publisher: { '@id': `${site.url}/#org` } }];
+---
+<Base title="Free Fleet Technology Health Check (2 minutes)"
+  description="Answer 8 questions to score your fleet's tracking, dispatch, billing, app and compliance setup and see the three areas to fix first. Free and instant."
+  path="/transportation/health-check/" schema={schema}>
+  <section class="section" style="padding-top:clamp(48px,8vw,96px)"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Free tool · 2 minutes</span><h1 style="font-size:clamp(2.2rem,5vw,3.75rem)">Fleet technology <span class="gradient">health check.</span></h1>
+      <p class="lead">Eight questions. See where your technology helps and where it slows you down.</p></div>
+    <div class="calc" id="hc" style="align-items:start">
+      <form class="form" id="hc-form" novalidate>
+        {questions.map((q, n) => (
+          <fieldset style="border:0;padding:0;margin:0;display:grid;gap:10px" data-q={q.id}>
+            <legend style="font-weight:600;font-size:1.05rem;padding:0;margin-bottom:6px">{n + 1}. {q.text}</legend>
+            {q.options.map((o) => <label style="display:flex;gap:10px;align-items:flex-start;cursor:pointer;font-size:.98rem"><input type="radio" name={q.id} value={o.points} style="margin-top:5px;accent-color:var(--blue)" /> <span>{o.label}</span></label>)}
+          </fieldset>
+        ))}
+        <button class="btn btn-primary" type="submit">See my score</button>
+        <div class="form-msg" id="hc-msg" role="alert"></div>
+      </form>
+      <div class="result" id="hc-result" aria-live="polite" style="display:none">
+        <small>Your fleet technology score</small>
+        <div class="big" id="hc-score">–</div>
+        <p id="hc-band" style="margin-top:6px"></p>
+        <hr />
+        <b>Fix these first</b>
+        <ol id="hc-list" style="padding-left:1.1em;margin:10px 0 0;color:rgba(255,255,255,.85)"></ol>
+        <a class="btn btn-primary" href="/book-ai-audit/" style="width:100%;margin-top:22px">Book a free AI Audit</a>
+        <p style="font-size:.8rem;margin:14px 0 0">A self-assessment for guidance only. Your answers stay in your browser.</p>
+      </div>
+    </div>
+  </div></section>
+  <section class="section alt"><div class="container"><div class="head center"><h2>About this check</h2></div><FAQ items={faqs} /></div></section>
+  <script type="application/json" id="hc-data" set:html={JSON.stringify({ areaLabels, recommendations })} />
+</Base>
+<script>
+  import { scoreHealthCheck } from '../../../lib/healthcheck';
+  const data = JSON.parse(document.getElementById('hc-data')!.textContent!);
+  const form = document.getElementById('hc-form') as HTMLFormElement;
+  const msg = document.getElementById('hc-msg')!;
+  const bands: Record<string, string> = { foundation: 'Foundation: big opportunities to save time and money.', growing: 'Growing: a solid base with clear improvements available.', strong: 'Strong: well run. Look at automation for the finishing touches.' };
+  form.addEventListener('submit', (e) => {
+    e.preventDefault();
+    const answers: Record<string, number> = {};
+    form.querySelectorAll<HTMLInputElement>('input:checked').forEach((i) => { answers[i.name] = Number(i.value); });
+    const r = scoreHealthCheck(answers);
+    if (!r.complete) { msg.textContent = 'Please answer all 8 questions to see your score.'; msg.className = 'form-msg show bad'; return; }
+    msg.className = 'form-msg';
+    document.getElementById('hc-score')!.textContent = `${r.score} / 100`;
+    document.getElementById('hc-band')!.textContent = bands[r.band];
+    const list = document.getElementById('hc-list')!; list.textContent = '';
+    if (!r.weakest.length) { const li = document.createElement('li'); li.textContent = 'Nothing urgent. Consider automation for routine tasks.'; list.append(li); }
+    for (const a of r.weakest) { const li = document.createElement('li'); const b = document.createElement('b'); b.textContent = data.areaLabels[a] + ': '; li.append(b, data.recommendations[a]); li.style.marginBottom = '8px'; list.append(li); }
+    const box = document.getElementById('hc-result')!; box.style.display = ''; box.scrollIntoView({ behavior: 'smooth', block: 'nearest' });
+  });
+</script>

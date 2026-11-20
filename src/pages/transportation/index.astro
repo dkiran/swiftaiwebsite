@@ -1,0 +1,60 @@
+---
+import Base from '../../layouts/Base.astro';
+import ServiceHero from '../../components/ServiceHero.astro';
+import Icon from '../../components/Icon.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
+import { founder } from '../../data/site';
+const faqs = [
+  { q: 'What does a fractional CTO do for a transportation or logistics company?', a: 'A fractional CTO owns technology decisions part-time: choosing the architecture for tracking, dispatch and driver apps, reviewing telematics and data pipelines, managing developers or vendors, and keeping costs and risk under control. For a fleet or mobility business this means the tracking data can be trusted and the software supports operations instead of slowing them.' },
+  { q: 'Can you build a ride-hailing, delivery or fleet mobile app?', a: 'Yes. Our founder has experience as a CTO in transportation, including mobile app development for ride-hailing-style products. We scope a first version tightly, build it in short cycles and agree scope, timeline and price in writing before starting.' },
+  { q: 'What is GPS telematics consulting?', a: 'GPS telematics consulting covers the design and review of systems that collect vehicle location and sensor data, move it reliably to the cloud, store it, and turn it into maps, alerts and reports. A review typically looks at device and data quality, ingestion and storage, scalability, cost and reporting.' },
+  { q: 'How can AI help a fleet or transport operator?', a: 'Common opportunities are answering routine customer and driver questions, checking driver and vehicle documents, matching trips to invoices, processing proof-of-delivery paperwork, summarising telematics data into daily reports and flagging unusual patterns. A free audit ranks these for your operation by time saved and effort.' },
+  { q: 'How much does it cost?', a: 'Fractional CTO time is ₹1,500 per hour, and early-stage startups can start from ₹850 per hour depending on scope. Fixed-scope work is quoted from estimated hours before we start. The Fleet Technology Health Check and the first AI Audit call are free.' },
+];
+const schema = [serviceSchema('Transportation and Mobility Technology Consulting', 'Fractional CTO, GPS telematics consulting, mobile app development and AI automation for transportation, logistics and mobility companies in India.', '/transportation/'),
+  breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Transportation', path: '/transportation/' }])];
+const offers = [
+  ['compass', 'Fractional CTO for mobility', 'Senior technology leadership for fleet, logistics and ride-hailing startups and operators. Part-time to start.', '/fractional-cto/'],
+  ['cpu', 'Telematics and fleet-tech review', 'A focused review of your tracking pipeline, data quality, architecture, cost and reporting, with a written action plan.', '/book-ai-audit/'],
+  ['bolt', 'Mobile app and platform build', 'Ride-hailing, delivery and fleet apps built in short cycles, with fixed scope, timeline and price.', '/get-started/'],
+  ['chart', 'AI automation for operations', 'Support, document checking, billing reconciliation and reporting automated where it genuinely saves time.', '/ai-automations/'],
+];
+---
+<Base title="Fractional CTO and AI for Transportation and Mobility"
+  description="Fractional CTO, GPS telematics consulting, ride-hailing app development and AI automation for fleet, logistics and mobility companies in India."
+  path="/transportation/" schema={schema}>
+  <ServiceHero eyebrow="Transportation and mobility" title="Technology leadership for <span class='gradient'>fleets, logistics and mobility.</span>"
+    lead="Fractional CTO, GPS telematics expertise, mobile apps and AI automation, from people who have built transportation technology."
+    ctaLabel="Book a free AI Audit" ctaHref="/book-ai-audit/" secondaryLabel="Take the free fleet health check" secondaryHref="/transportation/health-check/" />
+
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Who we work with</span><h2>Built for transport businesses.</h2></div>
+    <div class="grid g4">
+      <div class="card reveal"><h3>Fleet operators</h3><p>Owners of trucks, buses, cabs and delivery fleets who need reliable data and less manual work.</p></div>
+      <div class="card reveal d1"><h3>Logistics and last-mile</h3><p>3PLs and delivery companies that want smoother dispatch, proof of delivery and billing.</p></div>
+      <div class="card reveal d2"><h3>Ride-hailing and mobility startups</h3><p>Founders building taxi, ride-sharing, shuttle or EV mobility products.</p></div>
+      <div class="card reveal d3"><h3>Telematics and IoT companies</h3><p>Hardware and platform vendors that need software, architecture or CTO leadership.</p></div>
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">What we offer</span><h2>Four ways we help.</h2></div>
+    <div class="grid g2">
+      {offers.map(([i, t, d, h], n) => <a class={`card hover reveal d${n % 2}`} href={h}><span class="ico"><Icon name={i} /></span><h3>{t}</h3><p>{d}</p><span class="more">Learn more ›</span></a>)}
+    </div>
+  </div></section>
+
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Experience behind the work</span><h2>Led by someone who has done it.</h2></div>
+    <div class="grid g2"><ul class="checks reveal">{founder.facts.map((f) => <li>{f}</li>)}</ul>
+      <div class="card reveal d1"><h3>Where AI helps in transport</h3><p>Typical opportunities we look at in an audit: routine support on WhatsApp, driver and vehicle document checks, trip and invoice reconciliation, proof-of-delivery processing, and daily telematics summaries with unusual-pattern alerts. Results depend on your operation, and the audit ranks them for you.</p></div></div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head center reveal"><span class="eyebrow">Questions</span><h2>Transportation technology, answered.</h2></div>
+    <FAQ items={faqs} />
+  </div></section>
+  <CTA title="Where is your fleet losing time?" sub="Take the free 2-minute fleet technology health check, or book a free AI Audit and get a written plan." href="/transportation/health-check/" label="Take the health check" secondaryHref="/book-ai-audit/" secondaryLabel="Book a free AI Audit" />
+</Base>

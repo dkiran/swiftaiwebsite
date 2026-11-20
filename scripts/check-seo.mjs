@@ -61,11 +61,18 @@ if (process.env.CHECK_STAGE >= 3 || !process.env.CHECK_STAGE) {
     expect(s, hasType('Service'), 'missing Service JSON-LD');
   expect('products', (h) => h.includes('singleqr.in') && h.includes('singlestaff.com'), 'missing product links');
 }
+if (process.env.CHECK_STAGE >= 6 || !process.env.CHECK_STAGE) {
+  expect('transportation', hasType('Service'), 'missing Service JSON-LD');
+  expect('transportation', hasType('FAQPage'), 'missing FAQPage JSON-LD');
+  expect('transportation/health-check', hasType('WebApplication'), 'missing WebApplication JSON-LD');
+  expect('pricing', (h) => h.includes('850') && h.includes('1,500'), 'pricing page must show ₹850 and ₹1,500 rates');
+  expect('pricing', hasType('Offer'), 'missing Offer JSON-LD');
+}
 if (process.env.CHECK_STAGE >= 5 || !process.env.CHECK_STAGE) {
   const posts = existsSync(join(DIST, 'blog'))
     ? readdirSync(join(DIST, 'blog')).filter((d) => statSync(join(DIST, 'blog', d)).isDirectory())
     : [];
-  if (posts.length < 6) fail(`blog: expected ≥6 posts, found ${posts.length}`);
+  if (posts.length < 9) fail(`blog: expected ≥9 posts, found ${posts.length}`);
   for (const s of posts) expect('blog/' + s, hasType('Article'), 'missing Article JSON-LD');
 }
 

@@ -1,0 +1,43 @@
+---
+import Base from '../../layouts/Base.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { site } from '../../data/site';
+import { rates } from '../../data/pricing';
+import { estimateCto, inr } from '../../lib/calc';
+import { breadcrumbSchema } from '../../lib/schema';
+const examples = [5, 10, 20].map((h) => ({ h, startup: estimateCto({ stage: 'mvp', hoursPerWeek: h, months: 1 }), standard: estimateCto({ stage: 'scaling', hoursPerWeek: h, months: 1 }) }));
+const faqs = [
+  { q: 'How much does a Swift AI fractional CTO cost?', a: `Fractional CTO time is ${inr(rates.standardPerHour)} per hour. Early-stage startups can start from ${inr(rates.startupFromPerHour)} per hour depending on scope, so a founder building a first product can often work with a CTO at a lower rate.` },
+  { q: 'Is the free AI Audit really free?', a: 'Yes. The first 45-minute AI Audit call and the written opportunity map are free, with no obligation to hire us afterwards.' },
+  { q: 'How do you price fixed-scope projects?', a: 'We estimate the hours, agree the scope and total price in writing, and then deliver in short cycles. You see the figure before any work starts.' },
+  { q: 'Are the prices final?', a: 'The rates above are our current rates in Indian rupees. Examples are illustrative, and each engagement is confirmed in writing. Taxes are charged as applicable.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Pricing', path: '/pricing/' }]),
+  { '@context': 'https://schema.org', '@type': 'Service', name: 'Fractional CTO services', url: `${site.url}/pricing/`, provider: { '@id': `${site.url}/#org` }, areaServed: { '@type': 'Country', name: 'India' },
+    offers: [{ '@type': 'Offer', name: 'Fractional CTO, standard rate', priceCurrency: 'INR', priceSpecification: { '@type': 'UnitPriceSpecification', price: rates.standardPerHour, priceCurrency: 'INR', unitText: 'HOUR' } },
+      { '@type': 'Offer', name: 'Fractional CTO, early-stage startup rate (from)', priceCurrency: 'INR', priceSpecification: { '@type': 'UnitPriceSpecification', price: rates.startupFromPerHour, priceCurrency: 'INR', unitText: 'HOUR' } }] }];
+---
+<Base title="Pricing: Fractional CTO from ₹850 per Hour"
+  description="Swift AI fractional CTO pricing in rupees: ₹1,500 per hour, with early-stage startup rates from ₹850 per hour. The first AI Audit is free."
+  path="/pricing/" schema={schema}>
+  <section class="hero" style="padding-bottom:40px"><div class="container">
+    <span class="pill">Pricing</span><h1>Simple rates, <span class="gradient">in rupees.</span></h1>
+    <p class="lead">Pay for the hours you need. No long-term salary, no hidden fees.</p></div></section>
+  <section class="section alt" style="padding-top:48px"><div class="container">
+    <div class="grid g3">
+      <div class="card reveal"><span class="eyebrow">Free</span><h3>AI Audit</h3><p class="num" style="font-size:2.2rem">₹0</p><p>45-minute call and a written opportunity map. No obligation.</p><a class="btn btn-ghost" href="/book-ai-audit/" style="margin-top:auto;align-self:flex-start">Book free audit</a></div>
+      <div class="card reveal d1"><span class="eyebrow">Early-stage startups</span><h3>Fractional CTO</h3><p class="num" style="font-size:2.2rem">from {inr(rates.startupFromPerHour)}<small style="font-size:1rem;font-weight:500"> /hour</small></p><p>Depends on scope. For founders building a first product or MVP.</p><a class="btn btn-primary" href="/get-started/" style="margin-top:auto;align-self:flex-start">Request appointment</a></div>
+      <div class="card reveal d2"><span class="eyebrow">Companies</span><h3>Fractional CTO</h3><p class="num" style="font-size:2.2rem">{inr(rates.standardPerHour)}<small style="font-size:1rem;font-weight:500"> /hour</small></p><p>Standard rate for established and scaling businesses.</p><a class="btn btn-ghost" href="/hire-a-cto/" style="margin-top:auto;align-self:flex-start">Hire a CTO</a></div>
+    </div>
+  </div></section>
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">What it adds up to</span><h2>Monthly examples.</h2><p class="lead">Illustrative only. Real engagements are confirmed in writing.</p></div>
+    <div class="prose" style="max-width:820px"><table>
+      <thead><tr><th>Hours per week</th><th>Early-stage startup</th><th>Standard rate</th></tr></thead>
+      <tbody>{examples.map((e) => <tr><td>{e.h} hours</td><td>{inr(e.startup.monthlyMin)} – {inr(e.startup.monthlyMax)} per month</td><td>{inr(e.standard.monthlyMax)} per month</td></tr>)}</tbody></table>
+      <p><a href="/fractional-cto/cost-calculator/">Use the cost calculator</a> for your own hours and duration. Fixed-scope projects (apps, automations, architecture reviews) are quoted from estimated hours before we start.</p></div>
+  </div></section>
+  <section class="section alt"><div class="container"><div class="head center"><h2>Pricing questions</h2></div><FAQ items={faqs} /></div></section>
+  <CTA title="Not sure what you need?" sub="Start with the free AI Audit. You will get a clear next step and a price before anything is built." />
+</Base>

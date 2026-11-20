@@ -5,17 +5,15 @@ const num = (v: unknown, max = 1e9) => (typeof v === 'number' && Number.isFinite
 const round = (v: number) => Math.round(v);
 const roundK = (v: number) => Math.round(v / 1000) * 1000; // estimates read as estimates
 
-export type CtoInput = { stage: 'idea' | 'mvp' | 'scaling'; model: 'advisory' | 'handson' | 'teambuild'; hoursPerWeek: number; months: number; teamSize: number };
+export type CtoInput = { stage: 'idea' | 'mvp' | 'scaling'; hoursPerWeek: number; months: number };
 export type CtoEstimate = { monthlyMin: number; monthlyMax: number; totalMin: number; totalMax: number; fullTimeYearly: number };
 
 export function estimateCto(i: CtoInput): CtoEstimate {
   const p = pricing.cto;
-  const [lo, hi] = p.hourly[i.model] ?? p.hourly.handson;
+  const [lo, hi] = p.hourly[i.stage] ?? p.hourly.mvp;
   const hours = num(i.hoursPerWeek, 80) * p.weeksPerMonth;
-  const uplift = 1 + Math.min(num(i.teamSize), 30) * p.teamSizeUplift;
-  const mult = (p.stageMultiplier[i.stage] ?? 1) * uplift;
-  const monthlyMin = roundK(hours * lo * mult);
-  const monthlyMax = roundK(hours * hi * mult);
+  const monthlyMin = roundK(hours * lo);
+  const monthlyMax = roundK(hours * hi);
   const months = num(i.months, 120);
   return { monthlyMin, monthlyMax, totalMin: monthlyMin * months, totalMax: monthlyMax * months, fullTimeYearly: p.fullTimeYearly[i.stage] ?? p.fullTimeYearly.mvp };
 }

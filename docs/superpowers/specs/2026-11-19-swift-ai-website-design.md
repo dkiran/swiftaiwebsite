@@ -84,3 +84,10 @@ Exact copy polish, visual details and animation, icons and illustrations (SVG, n
 - **AI automation ROI calculator** (`/ai-automations/roi-calculator/`): inputs are process (support, invoicing, lead follow-up, reporting, HR), tasks per month, minutes per task, hourly cost in INR, and expected automation share; output is hours and rupees saved per month and year, plus payback period against an estimated build cost.
 - Both end with the CTA (audit booking or CTO request), can email the result through the lead form, and are linked from the matching service page and the home page.
 - **All rates and assumptions live in one file, `src/data/pricing.ts`, and are labelled "indicative estimate, not a quote".** I do not know Swift AI's real prices, so the values I put in are placeholders for you to set before launch.
+
+## Addendum (2026-11-20): transportation and mobility positioning
+- **Decision (user):** lead with transportation, logistics and mobility technology; AI automation and fractional CTO remain the delivery services. Reason: the founder has 20+ years in software, fractional CTO experience, transportation CTO experience (ride-hailing-style mobile apps) and GPS telematics experience; competitors are generalists and the business has no client case studies yet.
+- **Real rates (user):** fractional CTO ₹1,500 per hour; early-stage startups from ₹850 per hour depending on scope. These drive `src/data/pricing.ts`, the calculator and `/pricing/`.
+- **Added:** `/transportation/`, `/transportation/health-check/` (client-side 8-question quiz), `/pricing/`, a hero carousel slide and home band, founder facts block, three transportation blog posts, chat knowledge and `llms.txt` updates.
+- **Founder facts policy:** only user-confirmed facts appear on the site. The name is blank in `src/data/site.ts` until confirmed. No photo (user's choice).
+- **Still placeholders:** full-time CTO yearly benchmark and AI automation build costs in `pricing.ts`; contact details; CIN and GSTIN; domain.

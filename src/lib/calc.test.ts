@@ -2,7 +2,7 @@ import { describe, it, expect } from 'vitest';
 import { estimateCto, estimateRoi } from './calc';
 import { pricing } from '../data/pricing';
 
-const cto = { stage: 'mvp', model: 'handson', hoursPerWeek: 12, months: 6, teamSize: 5 } as const;
+const cto = { stage: 'mvp', hoursPerWeek: 12, months: 6 } as const;
 
 describe('estimateCto', () => {
   it('returns zero cost at zero hours', () => {
@@ -26,6 +26,16 @@ describe('estimateCto', () => {
   });
   it('reports the full-time benchmark from pricing for the stage', () => {
     expect(estimateCto(cto).fullTimeYearly).toBe(pricing.cto.fullTimeYearly.mvp);
+  });
+  it('prices startups at ₹850–₹1,500 per hour (10 h/week ≈ 43.3 h/month)', () => {
+    const r = estimateCto({ stage: 'mvp', hoursPerWeek: 10, months: 1 });
+    expect(r.monthlyMin).toBe(37000);
+    expect(r.monthlyMax).toBe(65000);
+  });
+  it('prices scaling companies at a flat ₹1,500 per hour', () => {
+    const r = estimateCto({ stage: 'scaling', hoursPerWeek: 10, months: 1 });
+    expect(r.monthlyMin).toBe(65000);
+    expect(r.monthlyMax).toBe(65000);
   });
 });
 
@@ -62,7 +72,7 @@ describe('absurd inputs stay finite', () => {
     expect(z.paybackMonths).toBeNull();
   });
   it('estimateCto clamps huge values to finite numbers', () => {
-    const r = estimateCto({ ...cto, hoursPerWeek: 1e200, months: 1e200, teamSize: 1e200 });
+    const r = estimateCto({ ...cto, hoursPerWeek: 1e200, months: 1e200 });
     for (const v of [r.monthlyMin, r.monthlyMax, r.totalMin, r.totalMax]) expect(Number.isFinite(v)).toBe(true);
   });
 });

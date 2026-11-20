@@ -1,7 +1,7 @@
 ---
 import Base from '../../layouts/Base.astro';
 import CTA from '../../components/CTA.astro';
-import { site } from '../../data/site';
+import { site, founder } from '../../data/site';
 import { breadcrumbSchema } from '../../lib/schema';
 const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', path: '/about/' }]),
   { '@context': 'https://schema.org', '@type': 'AboutPage', url: `${site.url}/about/`, about: { '@id': `${site.url}/#org` } }];
@@ -14,6 +14,10 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', 
   <section class="section alt"><div class="container"><div class="prose reveal">
     <h2>Who we are</h2>
     <p>Swift AI is the brand of <strong>{site.legalName}</strong>, a private limited company registered in India. We work with SMEs, MSMEs and startups on four things: AI automations, fractional and full-time CTO leadership, fast software development, and our own products, <a href={site.products.singleqr} rel="noopener">SingleQR</a> and <a href={site.products.singlestaff} rel="noopener">SingleStaff</a>.</p>
+    <h2>{founder.name ? `Led by ${founder.name}` : 'Founder-led'}</h2>
+    <p>Swift AI is founder-led by a technology leader with:</p>
+    <ul>{founder.facts.map((f) => <li>{f}</li>)}</ul>
+    <p>Our first focus is <a href="/transportation/">transportation, logistics and mobility technology</a>, where that experience matters most.</p>
     <h2>What we believe</h2>
     <ul><li><b>Understand before building.</b> Technology should start from the business problem.</li>
       <li><b>Speed is a feature.</b> Shorter cycles reduce risk and cost.</li>

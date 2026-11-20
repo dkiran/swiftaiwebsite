@@ -12,6 +12,8 @@ export async function GET() {
 - [AI Automations](${u('/ai-automations/')}): we study how a business runs, then implement AI automations (support, sales follow-up, finance, HR, reporting) wherever they save time and money. Start with a free AI Audit.
 - [Fractional CTO](${u('/fractional-cto/')}): part-time or full-time CTO leadership for startups and companies.
 - [Consultation](${u('/consultation/')}): software development at high speed using AI-assisted engineering.
+- [Transportation and mobility](${u('/transportation/')}): our specialty. Fractional CTO, GPS telematics consulting, ride-hailing-style mobile apps and AI automation for fleets, logistics and mobility companies. Free [fleet health check](${u('/transportation/health-check/')}).
+- [Pricing](${u('/pricing/')}): fractional CTO at INR 1,500 per hour; early-stage startups from INR 850 per hour. First AI Audit is free.
 - [Products](${u('/products/')}): SingleQR (${site.products.singleqr}) and SingleStaff (${site.products.singlestaff}).
 
 ## Get started

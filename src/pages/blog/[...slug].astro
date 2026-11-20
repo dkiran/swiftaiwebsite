@@ -18,7 +18,7 @@ const toc = headings.filter((h) => h.depth === 2);
 const all = (await getCollection('blog')).filter((p) => p.id !== post.id);
 const related = [...all.filter((p) => p.data.category === d.category), ...all.filter((p) => p.data.category !== d.category)].slice(0, 2);
 const fmt = (x: Date) => x.toLocaleDateString('en-IN', { year: 'numeric', month: 'long', day: 'numeric' });
-const service = d.category === 'AI Automation' ? { href: '/ai-automations/', label: 'AI Automations' } : { href: '/fractional-cto/', label: 'Fractional CTO services' };
+const service = d.category === 'AI Automation' ? { href: '/ai-automations/', label: 'AI Automations' } : d.category === 'Transportation Tech' ? { href: '/transportation/', label: 'Transportation and mobility technology' } : { href: '/fractional-cto/', label: 'Fractional CTO services' };
 const schema = [
   { '@context': 'https://schema.org', '@type': 'Article', headline: d.title, description: d.description, datePublished: d.date.toISOString(), dateModified: d.date.toISOString(),
     author: { '@type': 'Organization', name: site.name, url: site.url }, publisher: { '@id': `${site.url}/#org` },

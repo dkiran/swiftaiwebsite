@@ -5,3 +5,4 @@ dist
 .superpowers
 infra/chat/dist
 server/dist
+release

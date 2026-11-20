@@ -22,6 +22,19 @@ If your instance runs Amazon Linux, use these instead of the Ubuntu-style comman
 - **MySQL:** the client is `mysql` and the service is `mysqld` or `mariadb` (check with `systemctl list-units | grep -Ei "mysql|maria"`). If MySQL runs in Docker, put `docker exec -i <container>` in front of `mysql` commands.
 - **Installing nginx** (if it is not there yet): `sudo dnf install -y nginx && sudo systemctl enable --now nginx`.
 
+## 0c. Getting the code onto the server (pick one)
+**Option 0: upload a ready-made package (easiest, nothing is built on the server).** On any computer with Node 20+ and the repository, run `scripts/package-release.sh`. It creates `release/swiftai-release.tar.gz` containing the website files, the API, the database schema and the config files. Upload it, then on the server:
+```bash
+mkdir -p ~/swiftai-release && tar xzf swiftai-release.tar.gz -C ~/swiftai-release
+sudo mkdir -p /var/www/swiftai /opt/swiftai-api
+sudo cp -a ~/swiftai-release/site/. /var/www/swiftai/
+sudo cp -a ~/swiftai-release/api/. /opt/swiftai-api/
+cd /opt/swiftai-api && sudo npm install --omit=dev --no-audit --no-fund
+sudo systemctl restart swiftai-api
+```
+**Option 1: deploy from your computer with the scripts.** `scripts/deploy-ec2.sh ec2-user@IP key.pem` (website) and `scripts/deploy-api.sh ec2-user@IP key.pem` (API). Needs Node 20+, `rsync` and your key file on your computer.
+**Option 2: build on the server.** Clone the repository on the server (a private repository needs a read-only deploy key: `ssh-keygen -t ed25519 -f ~/.ssh/swiftai_deploy -N ""`, add the public key under the repository's Settings > Deploy keys, then `git clone`). Run `scripts/deploy-local.sh`. A small instance (1 GB memory) may run out of memory while building; add swap first: `sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`.
+
 ## 1. Server basics (once)
 1. Security group: allow 22 (your IP only), 80 and 443 (anywhere). Do NOT open 3100 or 3306 to the internet.
 2. Elastic IP attached to the instance (if SingleQR already uses one, you do not need another). Point `A` records for `swift-ai.in` and `www` at the instance's IP.

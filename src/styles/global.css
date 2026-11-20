@@ -70,9 +70,9 @@ p { margin: 0 0 1em; }
 .nav { position: sticky; top: 0; z-index: 50; height: var(--nav-h); background: rgba(255,255,255,.78);
   backdrop-filter: saturate(180%) blur(20px); -webkit-backdrop-filter: saturate(180%) blur(20px); border-bottom: 1px solid rgba(0,0,0,.06); }
 .nav .container { height: 100%; display: flex; align-items: center; justify-content: space-between; gap: 16px; }
-.logo { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', 'Segoe UI', sans-serif; font-weight: 200; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.02em; display: flex; align-items: center; gap: 9px; line-height: 1; }
+.logo { font-family: -apple-system, BlinkMacSystemFont, 'SF Pro Display', 'Inter Variable', 'Segoe UI', sans-serif; font-weight: 200; font-size: 1.5rem; color: var(--ink); letter-spacing: -0.02em; display: flex; align-items: center; gap: 3px; line-height: 1; }
 .logo:hover { text-decoration: none; }
-.logo img { height: 28px; width: auto; display: block; flex: none; }
+.logo img { height: 28px; width: auto; display: block; flex: none; margin-right: -2px; }
 .nav ul { display: flex; gap: 26px; list-style: none; margin: 0; padding: 0; }
 .nav ul a { color: var(--ink); opacity: .8; font-size: .9rem; }
 .nav ul a:hover { opacity: 1; text-decoration: none; }

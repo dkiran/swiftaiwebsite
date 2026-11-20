@@ -16,6 +16,15 @@ const year = new Date().getFullYear();
     <link rel="icon" href="/favicon.svg" type="image/svg+xml" />
     <link rel="alternate" type="application/rss+xml" title="Swift AI Blog" href="/rss.xml" />
     <SEO {...props} />
+    <!-- Google Tag Manager -->
+    <script is:inline async src="https://www.googletagmanager.com/gtm.js?id=GTM-NMW6ZWNC"></script>
+    <script is:inline>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      // Standard GTM start event: without it, "All Pages" / page-view triggers in the container may not fire.
+      dataLayer.push({ 'gtm.start': new Date().getTime(), event: 'gtm.js' });
+    </script>
     <script is:inline>document.documentElement.classList.add('js')</script>
     <noscript><style>.js .reveal{opacity:1!important;transform:none!important}</style></noscript>
   </head>

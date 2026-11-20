@@ -4,3 +4,4 @@ dist
 .env
 .superpowers
 infra/chat/dist
+server/dist

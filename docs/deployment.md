@@ -1,58 +1,84 @@
-# Deploying the Swift AI website on AWS
+# Deploying the Swift AI website on AWS (your EC2 instance)
 
-The site is a static website (plain HTML, CSS and a little JavaScript). `npm run build` creates a `dist/` folder, and that folder is the whole website.
-There are two parts: **the website** (EC2 + nginx, or S3 + CloudFront) and **the chat assistant** (one small AWS Lambda). Lead forms use a form service.
+Two things run on the server:
+1. **The website**: static files (`dist/`) served by nginx.
+2. **The API**: a small Node service (`swiftai-api`) on `127.0.0.1:3100`. nginx forwards `/api/` to it. It saves forms into MySQL, sends notification emails through ZeptoMail, and hosts the chat assistant. (This replaces Formspree and AWS Lambda.)
+
+SingleQR keeps running as it does today. We add a separate nginx site file, a separate database and a separate service on a different port. Nothing of SingleQR is edited.
 
 ## 0. Before you start
-- Confirm your domain (the site assumes `swift-ai.in`; change it in `src/data/site.ts`, `astro.config.mjs` and `public/robots.txt` if different).
-- Create a free form endpoint at Formspree (formspree.io) or Web3Forms and keep its URL.
-- Optional, for the chat assistant: an Anthropic API key (console.anthropic.com) with a monthly spend limit set.
-- Copy `.env.example` to `.env` and fill `PUBLIC_FORM_ENDPOINT` (and `PUBLIC_CHAT_ENDPOINT` once the Lambda exists). These are read when you build.
+- Domain: the site assumes `swift-ai.in` (change it in `src/data/site.ts`, `astro.config.mjs`, `public/robots.txt` and `deploy/nginx-swiftai.conf` if different).
+- Check the port is free on the server: `sudo ss -ltnp | grep 3100` should print nothing. If it is used, pick another port and use it in the env file and nginx config.
+- Node 20+ on the server: `node -v` (SingleQR already uses Node; if it is older than 20, install Node 20 with nvm or NodeSource).
+- ZeptoMail: add and verify your sending domain (swift-ai.in), create a **Mail Agent**, and copy its **Send Mail token**. Note which data centre you use (`.com`, `.in`, `.eu`): it decides `ZEPTOMAIL_API_HOST`.
+- Optional, for the chat assistant: an Anthropic API key with a monthly spend limit.
 
-## Option A: EC2 + nginx (fastest, uses your existing instance)
-1. **Open ports.** EC2 > Security Groups > your instance's group > inbound: SSH 22 (your IP only), HTTP 80 and HTTPS 443 (anywhere).
-2. **Give it a fixed IP.** EC2 > Elastic IPs > Allocate > Associate with the instance. (AWS charges for public IPv4 addresses outside the free allowance, so check Billing.)
-3. **Point your domain.** At your domain registrar (or Route 53), create `A` records for `swift-ai.in` and `www` pointing to the Elastic IP. DNS can take minutes to hours.
-4. **Install nginx on the server** (Ubuntu): `sudo apt update && sudo apt install -y nginx`
-5. **Create the web folder:** `sudo mkdir -p /var/www/swiftai && sudo chown $USER:$USER /var/www/swiftai`
-6. **Install the nginx config:** copy `deploy/nginx-swiftai.conf` to the server as `/etc/nginx/sites-available/swiftai`, then
-   `sudo ln -s /etc/nginx/sites-available/swiftai /etc/nginx/sites-enabled/swiftai && sudo rm -f /etc/nginx/sites-enabled/default && sudo nginx -t && sudo systemctl reload nginx`
-7. **Build and upload from your computer** (needs Node 20+): `scripts/deploy-ec2.sh ubuntu@YOUR_ELASTIC_IP path/to/key.pem`
-8. **Turn on HTTPS (free):** on the server, `sudo snap install --classic certbot && sudo certbot --nginx -d swift-ai.in -d www.swift-ai.in`. Choose to redirect HTTP to HTTPS. Renewal is automatic.
-9. **Check:** open `https://swift-ai.in`, click through pages, open `/sitemap-index.xml`, `/robots.txt` and `/llms.txt`.
+## 1. Server basics (once)
+1. Security group: allow 22 (your IP only), 80 and 443 (anywhere). Do NOT open 3100 or 3306 to the internet.
+2. Elastic IP attached to the instance (if SingleQR already uses one, you do not need another). Point `A` records for `swift-ai.in` and `www` at the instance's IP.
+3. Install nginx if it is not already there: `sudo apt update && sudo apt install -y nginx`.
+   Because SingleQR is already served from this instance, nginx is probably installed. Keep its existing site files as they are.
 
-To update the site later: change files, then run step 7 again.
+## 2. The database (once)
+Use a separate database and a user that can only touch it. Run as the MySQL admin (`sudo mysql` or `mysql -u root -p`):
+```sql
+CREATE DATABASE swiftai CHARACTER SET utf8mb4 COLLATE utf8mb4_unicode_ci;
+CREATE USER 'swiftai'@'127.0.0.1' IDENTIFIED BY 'PUT-A-LONG-RANDOM-PASSWORD-HERE';
+GRANT SELECT, INSERT, UPDATE ON swiftai.* TO 'swiftai'@'127.0.0.1';
+FLUSH PRIVILEGES;
+```
+Create the tables: `mysql -u root -p swiftai < server/schema.sql` (copy `server/schema.sql` to the server first). It is safe to run again.
+MySQL should listen on localhost only (`bind-address = 127.0.0.1`). Later phases will need extra privileges and tables; the schema file will tell you.
 
-## Option B: S3 + CloudFront (no server to maintain, global speed)
-1. Create an S3 bucket (block public access ON). Upload with `aws s3 sync dist/ s3://YOUR_BUCKET --delete`.
-2. Request a certificate in **ACM in us-east-1** for `swift-ai.in` and `www.swift-ai.in` and validate it through DNS.
-3. Create a CloudFront distribution: origin = the bucket with **Origin Access Control**, default root object `index.html`, viewer protocol "redirect to HTTPS", the ACM certificate, alternate domain names set.
-4. Add a **CloudFront Function** on viewer-request so folder URLs work:
-   ```js
-   function handler(event) {
-     var r = event.request, u = r.uri;
-     if (u.endsWith('/')) r.uri = u + 'index.html';
-     else if (!u.includes('.')) r.uri = u + '/index.html';
-     return r;
-   }
+## 3. The API service (once)
+1. Create a service user and folder:
+   ```bash
+   sudo useradd --system --no-create-home --shell /usr/sbin/nologin swiftai
+   sudo mkdir -p /opt/swiftai-api && sudo chown $USER:$USER /opt/swiftai-api
    ```
-5. Custom error response: 403/404 -> `/404.html` with status 404.
-6. Point the domain's `A`/`AAAA` alias records to the CloudFront distribution. After each deploy, invalidate `/*`.
+2. Create the secrets file from `deploy/server.env.example`:
+   ```bash
+   sudo nano /etc/swiftai-api.env      # paste the example, fill DB_PASSWORD, ZEPTOMAIL_TOKEN, etc.
+   sudo chown root:swiftai /etc/swiftai-api.env && sudo chmod 640 /etc/swiftai-api.env
+   ```
+   Secrets stay in this file only. They are never in the repository or the website.
+3. Install the service: `sudo cp deploy/swiftai-api.service /etc/systemd/system/` then `sudo systemctl daemon-reload && sudo systemctl enable swiftai-api`.
+4. Upload and start it (from your computer): `scripts/deploy-api.sh ubuntu@YOUR_SERVER_IP path/to/key.pem`.
+   It runs the tests, builds, uploads, installs dependencies on the server, restarts the service and prints `{"ok":true}` when healthy.
+5. See the log if needed: `sudo journalctl -u swiftai-api -n 50 --no-pager`.
 
-## The chat assistant (AWS Lambda)
-1. On your computer: `npm run build:chat`, then zip the file `infra/chat/dist/index.mjs` (the zip must contain `index.mjs` at its top level).
-2. AWS Lambda > Create function > Node.js 22 > upload the zip. Handler: `index.handler`.
-3. Configuration > Environment variables: `ANTHROPIC_API_KEY` (your key), `ALLOWED_ORIGIN` = `https://swift-ai.in`, optional `CHAT_MODEL`, and `CHAT_DISABLED=1` only when you want to switch the assistant off.
-4. Configuration > Function URL > Create, auth type NONE. Copy the URL.
-5. Configuration > Concurrency: reserve about 5 so cost stays bounded. Timeout: 30 seconds. Memory: 256 MB.
-6. Put the Function URL in `.env` as `PUBLIC_CHAT_ENDPOINT`, then rebuild and redeploy the website.
-7. Set a spend limit on the Anthropic key. Without `PUBLIC_CHAT_ENDPOINT` the widget shows a contact message instead.
+## 4. nginx and HTTPS
+1. Copy `deploy/nginx-swiftai.conf` to `/etc/nginx/sites-available/swiftai`, then:
+   ```bash
+   sudo ln -s /etc/nginx/sites-available/swiftai /etc/nginx/sites-enabled/swiftai
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+   (Do not remove SingleQR's site file. `default` can be removed only if SingleQR does not use it.)
+2. Upload the website: `scripts/deploy-ec2.sh ubuntu@YOUR_SERVER_IP path/to/key.pem` (first create the folder: `sudo mkdir -p /var/www/swiftai && sudo chown $USER:$USER /var/www/swiftai`).
+3. Free HTTPS: `sudo snap install --classic certbot && sudo certbot --nginx -d swift-ai.in -d www.swift-ai.in` (choose redirect to HTTPS). Renewal is automatic.
 
-## After launch
-- Verify the Google Tag Manager tag fires (GTM Preview).
-- Submit `https://swift-ai.in/sitemap-index.xml` in Google Search Console and Bing Webmaster Tools.
-- Submit a test form and confirm it reaches your inbox.
-- Have the Privacy and Terms pages reviewed by a lawyer; add a cookie banner if you serve EU or UK visitors.
+## 5. Check everything
+- `curl https://swift-ai.in/api/health` returns `{"ok":true}`.
+- Open the site, submit the Contact form. You should see the success message, receive a notification email, and find the row:
+  `mysql -u root -p swiftai -e "SELECT id, form_name, email_sent, created_at FROM form_submissions ORDER BY id DESC LIMIT 5;"`
+- `email_sent = 0` with an `email_error` means the lead was saved but the email failed (wrong token, unverified domain or wrong host). Fix the env file, then `sudo systemctl restart swiftai-api`.
+- The chat widget answers (needs `ANTHROPIC_API_KEY`), and shows the contact message if the key is empty.
+- `/sitemap-index.xml`, `/robots.txt` and `/llms.txt` open.
 
-## Cost notes
-Check AWS Billing for your free-tier or credit status. A small EC2 instance, an Elastic IP, Route 53 hosted zone (about $0.50 a month), Lambda (a free allowance applies), and CloudFront (a free monthly allowance applies) are the cost items. The Anthropic API is billed separately for chat usage.
+## 6. Backups (do this on day one)
+Nightly dump kept for 14 days (as root: `sudo crontab -e`):
+```
+15 2 * * * mkdir -p /var/backups/swiftai && mysqldump --single-transaction swiftai | gzip > /var/backups/swiftai/swiftai-$(date +\%F).sql.gz && find /var/backups/swiftai -name '*.sql.gz' -mtime +14 -delete
+```
+Copy the backups off the instance regularly (for example to an S3 bucket) because they hold personal data.
+
+## 7. Updating later
+- Website changes: `scripts/deploy-ec2.sh ...`
+- API changes: `scripts/deploy-api.sh ...`
+
+## 8. After launch
+- Verify the Google Tag Manager tag (GTM Preview) and submit `https://swift-ai.in/sitemap-index.xml` in Google Search Console.
+- Have the Privacy and Terms pages reviewed. You now store personal data (names, emails, phone numbers, CTO rates): keep the database private, back it up, delete data on request, and add a cookie banner if you serve EU or UK visitors.
+
+## Optional: S3 + CloudFront for the website files
+Possible later, but the API still needs the server. Not needed now.

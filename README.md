@@ -1,6 +1,6 @@
 # Swift AI website
 
-Marketing site for **Swift AI Tech Solutions Private Limited**. Astro static site (plain HTML/CSS, minimal JS) plus an optional AI chat function on AWS Lambda.
+Marketing site for **Swift AI Tech Solutions Private Limited**. Astro static site (plain HTML/CSS, minimal JS) plus our own Node API (forms saved to MySQL, ZeptoMail email, chat assistant) running on your server.
 
 ## Develop
 ```bash
@@ -14,29 +14,25 @@ npm run build && npm run check   # build + SEO/AEO structure checks on dist/
 | What | Where |
 |---|---|
 | Domain (`swift-ai.in` is assumed from your email domain; confirm) | `astro.config.mjs`, `src/data/site.ts`, `public/robots.txt` |
-| Email, phone, address, CIN, GSTIN, social links | `src/data/site.ts` |
+| Email, phone, addresses, GSTIN, social links | `src/data/site.ts` |
 | **Calculator rates (illustrative only!)** | `src/data/pricing.ts` |
 | Chat assistant facts | `src/data/knowledge.ts` |
 | Privacy and Terms | `src/pages/privacy`, `src/pages/terms` (have a lawyer review) |
 
-## Lead forms
-Forms post JSON to `PUBLIC_FORM_ENDPOINT`. **Formspree:** paste your form URL, nothing else. **Web3Forms:** set the endpoint to `https://api.web3forms.com/submit` and put your key in `PUBLIC_FORM_ACCESS_KEY`. Copy `.env.example` to `.env` locally; set the variable in your host's build settings for production. If unset, forms show a "not connected" message instead of silently succeeding.
+## Forms, chat and the API
+The website posts forms to its own API (`/api/forms`) and the chat to `/api/chat`. A small Node service in `server/` saves submissions to MySQL, emails you through ZeptoMail, and hosts the chat assistant. See `docs/deployment.md` for the full server setup (this replaces Formspree and AWS Lambda).
 
-## Hosting on AWS
-**Site (static):** `npm run build`, then upload `dist/` to an S3 bucket behind CloudFront (or connect the repo to AWS Amplify Hosting with build command `npm run build`, output `dist`). Serve `/404.html` for missing pages and enable HTTPS.
-
-**Chat assistant (Lambda):**
-1. `npm run build:chat` creates `infra/chat/dist/index.mjs`; zip it as `chat.zip` and create a Node.js 22 Lambda with handler `index.handler`.
-2. Enable a **Function URL** (auth NONE) and add it as `PUBLIC_CHAT_ENDPOINT` in the site's build settings, then rebuild.
-3. Lambda environment variables: `ANTHROPIC_API_KEY` (store in Secrets Manager or encrypted env var), optional `CHAT_MODEL` (default `claude-haiku-5-5`), `ALLOWED_ORIGIN` (`https://your-domain`), `CHAT_DISABLED=1` as a kill switch.
-4. **Control cost:** set a spend limit on the Anthropic key, set reserved concurrency on the Lambda (for example 5), and optionally put AWS WAF rate limiting in front. The built-in limiter (10 requests per minute per IP) is per Lambda container only.
-5. Without `PUBLIC_CHAT_ENDPOINT` the widget shows a contact fallback.
+```bash
+npm run test:server     # API tests (set TEST_DB_HOST, TEST_DB_USER, TEST_DB_PASSWORD, TEST_DB_NAME to also run the real-database tests)
+npm run build:server    # builds server/dist/main.mjs
+```
+Locally, `npm run dev` has no API. To try forms locally, run the built API against a test database and set `PUBLIC_FORM_ENDPOINT=http://127.0.0.1:3100/api/forms` in `.env`.
 
 ## Add a blog post
 Create `src/content/blog/<slug>.md` with frontmatter `title` (max 70 chars), `description` (70–160), `tldr`, `date`, `category` (`AI Automation` or `Fractional CTO`), `readingMinutes`, and optional `faq`. The build fails on missing fields. Sitemap, RSS, `llms.txt` and schema update automatically.
 
 ## Add a CTO / CAIO profile (curated network)
-1. A CTO or CAIO applies at `/join-as-a-cto/`. The submission (including their **private** hourly rate and publishing consent) arrives in your form inbox. Keep the rate in your own records; it is never put on the site.
+1. A CTO or CAIO applies at `/join-as-a-cto/`. The submission (including their **private** hourly rate and publishing consent) is saved in MySQL (`form_submissions`) and emailed to you. Keep the rate in your own records; it is never put on the site.
 2. After you review them and they consent, create `src/content/profiles/<first-last>.md` (copy `d-kiran-kumar.md`). Fields: `name`, `headline`, `roles` (CTO and/or CAIO), `yearsExperience`, `domains`, `skills`, `engagement` (fractional, full-time, advisory, interim), optional `availability` (available, limited, booked), `location`, `linkedin`, `highlights`, `status` (published or draft), and a Markdown bio.
 3. **There is no `rate` field and the build fails if you add one.** Companies see rates only when they request an introduction and you share it.
 4. Commit and deploy. The profile appears on `/cto-network/` with its own page, search and filters pick it up automatically. Use `status: draft` to hide a profile.

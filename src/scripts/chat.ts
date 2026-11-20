@@ -24,7 +24,7 @@ export function initChat() {
   const form = root.querySelector<HTMLFormElement>('.chat-form')!;
   const input = form.querySelector<HTMLInputElement>('input')!;
   const send = form.querySelector<HTMLButtonElement>('button')!;
-  const endpoint: string = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? '';
+  const endpoint: string = import.meta.env.PUBLIC_CHAT_ENDPOINT ?? (import.meta.env.PROD ? '/api/chat' : '');
   const history: Msg[] = [];
 
   const add = (cls: 'bot' | 'me', text: string) => { const d = document.createElement('div'); d.className = `msg ${cls}`; render(d, text); log.append(d); log.scrollTop = log.scrollHeight; return d; };

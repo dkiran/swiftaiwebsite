@@ -14,6 +14,10 @@ describe('validate', () => {
   it('rejects an empty required field', () => expect(validate({ ...good, name: '  ' }, fields).name).toBeTruthy());
   it('rejects a malformed email', () => expect(validate({ ...good, email: 'a@b' }, fields).email).toBeTruthy());
   it('rejects a phone with fewer than 10 digits', () => expect(validate({ ...good, phone: '12345' }, fields).phone).toBeTruthy());
+  it('accepts Indian and international numbers and rejects impossible ones', () => {
+    for (const ok of ['8008575757', '+91 80085 75757', '+44 20 7946 0958']) expect(validate({ ...good, phone: ok }, fields).phone, ok).toBeUndefined();
+    for (const bad of ['1234567890', 'abc', '+91 12345 67890']) expect(validate({ ...good, phone: bad }, fields).phone, bad).toBeTruthy();
+  });
   it('does not require optional fields', () => expect(validate({ ...good, note: '' }, fields).note).toBeUndefined());
 });
 
@@ -33,16 +37,6 @@ describe('postLead', () => {
     expect(await postLead(good, 'https://x.test/f', bad as unknown as typeof fetch)).toBe('error');
     const boom = vi.fn().mockRejectedValue(new Error('net'));
     expect(await postLead(good, 'https://x.test/f', boom as unknown as typeof fetch)).toBe('error');
-  });
-  it('adds access_key to the body when one is provided', async () => {
-    const f = vi.fn().mockResolvedValue({ ok: true });
-    await postLead(good, 'https://api.web3forms.com/submit', f as unknown as typeof fetch, 'KEY123');
-    expect(JSON.parse((f.mock.calls[0][1] as RequestInit).body as string).access_key).toBe('KEY123');
-  });
-  it('omits access_key when none is provided', async () => {
-    const f = vi.fn().mockResolvedValue({ ok: true });
-    await postLead(good, 'https://x.test/f', f as unknown as typeof fetch);
-    expect(JSON.parse((f.mock.calls[0][1] as RequestInit).body as string)).not.toHaveProperty('access_key');
   });
   it('silently drops submissions where the honeypot is filled', async () => {
     const f = vi.fn();

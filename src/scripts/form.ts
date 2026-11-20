@@ -1,3 +1,5 @@
+import { isValidPhone } from '../lib/phone';
+
 export type Field = {
   name: string; label: string;
   type: 'text' | 'email' | 'tel' | 'select' | 'textarea' | 'url';
@@ -13,18 +15,18 @@ export function validate(values: Record<string, string>, fields: Field[]): Recor
     const v = (values[f.name] ?? '').trim();
     if (!v) { if (f.required) errors[f.name] = `${f.label} is required`; continue; }
     if (f.type === 'email' && !EMAIL.test(v)) errors[f.name] = 'Enter a valid email address';
-    if (f.type === 'tel' && v.replace(/\D/g, '').length < 10) errors[f.name] = 'Enter a valid phone number (10+ digits)';
+    if (f.type === 'tel' && !isValidPhone(v)) errors[f.name] = 'Enter a valid mobile number (Indian 10-digit, or international with + and country code)';
     if (f.type === 'url' && !/^https?:\/\/.+\..+/.test(v)) errors[f.name] = 'Enter a full URL starting with https://';
   }
   return errors;
 }
 
-export async function postLead(values: Record<string, string>, endpoint: string, fetchImpl: typeof fetch = fetch, accessKey = ''): Promise<Result> {
+export async function postLead(values: Record<string, string>, endpoint: string, fetchImpl: typeof fetch = fetch): Promise<Result> {
   if (values._gotcha) return 'ok'; // honeypot: pretend success, send nothing
   if (!endpoint) return 'unconfigured';
   try {
     const res = await fetchImpl(endpoint, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(accessKey ? { ...values, access_key: accessKey } : values),
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(values),
     });
     return res.ok ? 'ok' : 'error';
   } catch { return 'error'; }
@@ -33,7 +35,8 @@ export async function postLead(values: Record<string, string>, endpoint: string,
 export async function submit(form: HTMLFormElement): Promise<Result> {
   const values: Record<string, string> = {};
   new FormData(form).forEach((v, k) => { values[k] = String(v); });
-  return postLead(values, import.meta.env.PUBLIC_FORM_ENDPOINT ?? '', fetch, import.meta.env.PUBLIC_FORM_ACCESS_KEY ?? '');
+  // Same-origin API on the production site (nginx forwards /api/ to our Node service). Empty in local dev unless set in .env.
+  return postLead(values, import.meta.env.PUBLIC_FORM_ENDPOINT ?? (import.meta.env.PROD ? '/api/forms' : ''));
 }
 
 /** Wire every <form data-lead> on the page. */

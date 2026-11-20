@@ -103,3 +103,15 @@ Exact copy polish, visual details and animation, icons and illustrations (SVG, n
 - **No fake profiles:** the first profile is the founder's, from confirmed facts only. Others are added when their owners send details and consent.
 - **Non-goals:** logins, self-serve editing, messaging, payments, photos (all later: Option B or C).
 - **Later path:** the profile data shape is reusable if storage moves to a database (Option B).
+
+## Addendum (2026-11-20): own backend, accounts and registration-gated network
+**Decisions (user):** replace Formspree with our own forms on the existing EC2 MySQL; SingleQR also runs on this instance (Node); email via **ZeptoMail**; CTO/CAIO register then create a profile; people who search must register with a **valid email and mobile number**; **mobile number is collected and format-checked now (Indian or international), SMS verification in a later phase; email verification is required now**; sign-in is **email + password**; before registering, visitors see **public teaser cards** (count, filters, headline, domains, years; no names), and full profiles, names, bios, LinkedIn links and introduction requests need an account. Delivery is phased.
+
+**Architecture:** the Astro static site stays. A small Node service (TypeScript, built by esbuild into one file, run by systemd) listens on `127.0.0.1:3100`; nginx proxies `/api/` to it. It uses MySQL (separate database and a least-privilege user), ZeptoMail's REST API for email, and also hosts the chat assistant (replacing the Lambda). The service speaks Web-standard `Request`/`Response`, so handlers are unit-testable without a server.
+
+**Phases**
+1. **Foundation (this plan):** API service, MySQL schema, `/api/forms` (validate, rate-limit, honeypot, store, notify by email), `/api/chat`, shared phone validation, deploy files and docs, nightly backup.
+2. **Accounts and profiles:** register (email + password, email verification link), sign-in, sessions (httpOnly cookie, hashed token in DB), password reset, CTO/CAIO profile editor, admin approval page.
+3. **Searchers:** register with email + mobile (format-checked), verified email, gated search and full profiles via API, introduction requests, public teaser page; later SMS verification.
+
+**Security rules:** passwords hashed with scrypt (per-user salt); sessions are random tokens stored hashed; verification and reset tokens are single-use and expire; all SQL is parameterised; rate limits on forms, sign-up and sign-in; private rates stay in the database and are never returned by any public endpoint; the service listens on localhost only; secrets only in `/etc/swiftai-api.env` (never in the repo or the browser). Data-protection: Privacy page covers consent, purpose, retention and deletion requests; nightly MySQL backups.

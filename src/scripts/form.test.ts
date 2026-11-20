@@ -34,6 +34,16 @@ describe('postLead', () => {
     const boom = vi.fn().mockRejectedValue(new Error('net'));
     expect(await postLead(good, 'https://x.test/f', boom as unknown as typeof fetch)).toBe('error');
   });
+  it('adds access_key to the body when one is provided', async () => {
+    const f = vi.fn().mockResolvedValue({ ok: true });
+    await postLead(good, 'https://api.web3forms.com/submit', f as unknown as typeof fetch, 'KEY123');
+    expect(JSON.parse((f.mock.calls[0][1] as RequestInit).body as string).access_key).toBe('KEY123');
+  });
+  it('omits access_key when none is provided', async () => {
+    const f = vi.fn().mockResolvedValue({ ok: true });
+    await postLead(good, 'https://x.test/f', f as unknown as typeof fetch);
+    expect(JSON.parse((f.mock.calls[0][1] as RequestInit).body as string)).not.toHaveProperty('access_key');
+  });
   it('silently drops submissions where the honeypot is filled', async () => {
     const f = vi.fn();
     expect(await postLead({ ...good, _gotcha: 'bot' }, 'https://x.test/f', f as unknown as typeof fetch)).toBe('ok');

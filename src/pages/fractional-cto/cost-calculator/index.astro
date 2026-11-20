@@ -52,7 +52,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fraction
     $('ft').textContent = inr(r.fullTimeYearly);
     const fractionalYear = r.monthlyMax * 12;
     $('verdict').textContent = fractionalYear < r.fullTimeYearly
-      ? `At this level a fractional CTO costs up to ${Math.round((1 - fractionalYear / r.fullTimeYearly) * 100)}% less per year than a full-time CTO.`
+      ? `At this level a fractional CTO costs at least ${Math.round((1 - fractionalYear / r.fullTimeYearly) * 100)}% less per year than a full-time CTO (based on the top of the range).`
       : 'At this many hours, a full-time CTO may be the better value. Talk to us about the right setup.';
   };
   document.querySelectorAll('#cto-calc input, #cto-calc select').forEach((e) => e.addEventListener('input', run));

@@ -20,7 +20,7 @@ npm run build && npm run check   # build + SEO/AEO structure checks on dist/
 | Privacy and Terms | `src/pages/privacy`, `src/pages/terms` (have a lawyer review) |
 
 ## Lead forms
-Forms post JSON to `PUBLIC_FORM_ENDPOINT` (create a free form at Formspree or Web3Forms and paste the URL). Copy `.env.example` to `.env` locally; set the variable in your host's build settings for production. If unset, forms show a "not connected" message instead of silently succeeding.
+Forms post JSON to `PUBLIC_FORM_ENDPOINT`. **Formspree:** paste your form URL, nothing else. **Web3Forms:** set the endpoint to `https://api.web3forms.com/submit` and put your key in `PUBLIC_FORM_ACCESS_KEY`. Copy `.env.example` to `.env` locally; set the variable in your host's build settings for production. If unset, forms show a "not connected" message instead of silently succeeding.
 
 ## Hosting on AWS
 **Site (static):** `npm run build`, then upload `dist/` to an S3 bucket behind CloudFront (or connect the repo to AWS Amplify Hosting with build command `npm run build`, output `dist`). Serve `/404.html` for missing pages and enable HTTPS.

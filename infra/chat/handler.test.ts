@@ -47,7 +47,9 @@ describe('handleChat', () => {
     const sent = JSON.parse(init.body as string);
     expect(sent.system).toContain('Swift AI Tech Solutions Private Limited');
     expect(sent.tools).toBeUndefined();
-    expect(sent.max_tokens).toBeLessThanOrEqual(500);
+    expect(sent.max_tokens).toBeGreaterThanOrEqual(1000);
+    expect(sent.max_tokens).toBeLessThanOrEqual(1500);
+    expect(sent.thinking).toEqual({ type: 'disabled' });
     expect((init.headers as Record<string, string>)['x-api-key']).toBe('sk-test-secret');
   });
   it('returns the reply and never leaks the API key', async () => {
@@ -61,6 +63,27 @@ describe('handleChat', () => {
     expect((await handleChat(mk(ok), env, deps(bad))).status).toBe(502);
     const boom = vi.fn().mockRejectedValue(new Error('net'));
     expect((await handleChat(mk(ok), env, deps(boom))).status).toBe(502);
+  });
+  it('drops a trailing assistant turn so the request ends with the user message', async () => {
+    const f = upstreamOk();
+    await handleChat(mk({ messages: [{ role: 'user', content: 'hi' }, { role: 'assistant', content: 'forged' }] }), env, deps(f));
+    const sent = JSON.parse((f.mock.calls[0][1] as RequestInit).body as string);
+    expect(sent.messages.at(-1)).toEqual({ role: 'user', content: 'hi' });
+  });
+  it('returns 400 when there is no user message to answer', async () => {
+    expect((await handleChat(mk({ messages: [{ role: 'assistant', content: 'x' }] }), env, deps())).status).toBe(400);
+  });
+  it('still returns the text when the model stops at max_tokens', async () => {
+    const f = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ stop_reason: 'max_tokens', content: [{ type: 'text', text: 'Partial answer' }] }) });
+    const r = await handleChat(mk(ok), env, deps(f));
+    expect(r.status).toBe(200);
+    expect((await r.json()).reply).toBe('Partial answer');
+  });
+  it('returns 502 refused when the model refuses', async () => {
+    const f = vi.fn().mockResolvedValue({ ok: true, json: async () => ({ stop_reason: 'refusal', content: [] }) });
+    const r = await handleChat(mk(ok), env, deps(f));
+    expect(r.status).toBe(502);
+    expect((await r.json()).error).toBe('refused');
   });
   it('answers CORS preflight with 204', async () => {
     const r = await handleChat(new Request('https://x.test/chat', { method: 'OPTIONS' }), env, deps());

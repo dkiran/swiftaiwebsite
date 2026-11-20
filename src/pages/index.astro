@@ -14,12 +14,10 @@ const faqs = [
   { q: 'How fast can you build software?', a: 'We use AI-assisted engineering, tight scoping and reusable components, which shortens most projects from months to weeks. Timelines depend on scope, and we confirm them in writing before starting.' },
   { q: 'Is Swift AI a registered company?', a: `Yes. Swift AI is the brand of ${site.legalName}, a private limited company registered in India.` },
 ];
-const schema = [{ '@context': 'https://schema.org', '@type': 'ProfessionalService', name: site.name, url: site.url, areaServed: 'IN',
-  description: 'AI automation, fractional CTO services, software development and SaaS products for Indian businesses.', parentOrganization: { '@id': `${site.url}/#org` } }];
 ---
 <Base title="Swift AI: AI Automation and Fractional CTO Services in India"
   description="Swift AI helps SMEs and startups in India automate work with AI, hire fractional CTOs and ship software 10x faster. Book a free AI Audit."
-  path="/" schema={schema}>
+  path="/">
 
   <section class="hero">
     <div class="container">
@@ -39,7 +37,7 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'ProfessionalServic
       <div class="grid g2">
         <ServiceCard href="/ai-automations/" icon="cpu" title="AI Automations" text="We learn how your business runs, then automate support, sales follow-ups, invoicing, reporting and more, wherever AI genuinely saves time." />
         <ServiceCard href="/fractional-cto/" icon="compass" title="Fractional CTO" text="Senior technology leadership for startups and SMEs, part-time or full-time, without the cost of a full-time hire." />
-        <ServiceCard href="/products/" icon="box" title="Products" text="SingleQR and SingleStaff: software we built, run and stand behind." cta="Explore products" />
+        <ServiceCard href="/products/" icon="box" title="Products" text="SingleQR and SingleStaff: our own products, built and operated by Swift AI." cta="Explore products" />
         <ServiceCard href="/consultation/" icon="bolt" title="Consultation" text="Software development at 10x speed, using AI-assisted engineering and a ruthless focus on what matters." />
       </div>
     </div>
@@ -59,10 +57,10 @@ const schema = [{ '@context': 'https://schema.org', '@type': 'ProfessionalServic
 
   <section class="section dark">
     <div class="container">
-      <div class="head reveal"><span class="eyebrow">Our products</span><h2>Software we run ourselves.</h2><p class="lead">We don't just advise. We build and operate products used by real businesses.</p></div>
+      <div class="head reveal"><span class="eyebrow">Our products</span><h2>Software we run ourselves.</h2><p class="lead">We don't just advise. We build and operate our own products.</p></div>
       <div class="grid g2">
-        <a class="card big reveal" href={site.products.singleqr} rel="noopener"><span class="ico"><Icon name="qr" /></span><h3>SingleQR</h3><p>One QR code for everything your business shares: links, payments and contact details, managed in one place.</p><span class="more">singleqr.in ›</span></a>
-        <a class="card big reveal d1" href={site.products.singlestaff} rel="noopener"><span class="ico"><Icon name="users" /></span><h3>SingleStaff</h3><p>Staffing and workforce management made simple, so hiring and managing people takes less effort.</p><span class="more">singlestaff.com ›</span></a>
+        <a class="card big reveal" href={site.products.singleqr} rel="noopener"><span class="ico"><Icon name="qr" /></span><h3>SingleQR</h3><p>A Swift AI product. See what it does at singleqr.in.</p><span class="more">singleqr.in ›</span></a>
+        <a class="card big reveal d1" href={site.products.singlestaff} rel="noopener"><span class="ico"><Icon name="users" /></span><h3>SingleStaff</h3><p>A Swift AI product. See what it does at singlestaff.com.</p><span class="more">singlestaff.com ›</span></a>
       </div>
     </div>
   </section>

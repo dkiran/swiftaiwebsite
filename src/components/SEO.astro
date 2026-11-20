@@ -1,14 +1,14 @@
 ---
 import { site } from '../data/site';
-interface Props { title: string; description: string; path: string; ogType?: 'website' | 'article'; schema?: object[]; }
-const { title, description, path, ogType = 'website', schema = [] } = Astro.props;
+interface Props { title: string; description: string; path: string; ogType?: 'website' | 'article'; schema?: object[]; noindex?: boolean; }
+const { title, description, path, ogType = 'website', schema = [], noindex = false } = Astro.props;
 const fullTitle = path === '/' ? title : `${title} | ${site.name}`;
 const canonical = new URL(path, site.url).href;
 const og = new URL('/og-default.png', site.url).href;
 const base = [
   { '@context': 'https://schema.org', '@type': 'Organization', '@id': `${site.url}/#org`, name: site.name, legalName: site.legalName, url: site.url,
     logo: `${site.url}/favicon.svg`, description: site.tagline, areaServed: 'IN',
-    sameAs: [site.products.singleqr, site.products.singlestaff, ...Object.values(site.social).filter(Boolean)],
+    sameAs: Object.values(site.social).filter(Boolean),
     contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email, areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
   { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, publisher: { '@id': `${site.url}/#org` } },
 ];
@@ -17,7 +17,7 @@ const all = [...base, ...schema];
 <title>{fullTitle}</title>
 <meta name="description" content={description} />
 <link rel="canonical" href={canonical} />
-<meta name="robots" content="index,follow,max-image-preview:large,max-snippet:-1" />
+<meta name="robots" content={noindex ? 'noindex,follow' : 'index,follow,max-image-preview:large,max-snippet:-1'} />
 <meta property="og:title" content={fullTitle} />
 <meta property="og:description" content={description} />
 <meta property="og:type" content={ogType} />

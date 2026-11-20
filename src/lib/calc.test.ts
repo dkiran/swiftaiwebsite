@@ -52,3 +52,17 @@ describe('estimateRoi', () => {
     expect(estimateRoi({ ...roi, process: 'unknown' }).buildCostInr).toBe(pricing.roi.defaultBuildCostInr);
   });
 });
+
+describe('absurd inputs stay finite', () => {
+  it('estimateRoi clamps huge values to finite numbers', () => {
+    const r = estimateRoi({ process: 'support', tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 1e200, automationPct: 70 });
+    for (const v of [r.hoursSavedMonthly, r.savedMonthlyInr, r.savedYearlyInr]) expect(Number.isFinite(v)).toBe(true);
+    const z = estimateRoi({ process: 'support', tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 0, automationPct: 70 });
+    expect(z.savedMonthlyInr).toBe(0);
+    expect(z.paybackMonths).toBeNull();
+  });
+  it('estimateCto clamps huge values to finite numbers', () => {
+    const r = estimateCto({ ...cto, hoursPerWeek: 1e200, months: 1e200, teamSize: 1e200 });
+    for (const v of [r.monthlyMin, r.monthlyMax, r.totalMin, r.totalMax]) expect(Number.isFinite(v)).toBe(true);
+  });
+});

@@ -19,12 +19,12 @@ export function validate(values: Record<string, string>, fields: Field[]): Recor
   return errors;
 }
 
-export async function postLead(values: Record<string, string>, endpoint: string, fetchImpl: typeof fetch = fetch): Promise<Result> {
+export async function postLead(values: Record<string, string>, endpoint: string, fetchImpl: typeof fetch = fetch, accessKey = ''): Promise<Result> {
   if (values._gotcha) return 'ok'; // honeypot: pretend success, send nothing
   if (!endpoint) return 'unconfigured';
   try {
     const res = await fetchImpl(endpoint, {
-      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(values),
+      method: 'POST', headers: { 'Content-Type': 'application/json', Accept: 'application/json' }, body: JSON.stringify(accessKey ? { ...values, access_key: accessKey } : values),
     });
     return res.ok ? 'ok' : 'error';
   } catch { return 'error'; }
@@ -33,7 +33,7 @@ export async function postLead(values: Record<string, string>, endpoint: string,
 export async function submit(form: HTMLFormElement): Promise<Result> {
   const values: Record<string, string> = {};
   new FormData(form).forEach((v, k) => { values[k] = String(v); });
-  return postLead(values, import.meta.env.PUBLIC_FORM_ENDPOINT ?? '');
+  return postLead(values, import.meta.env.PUBLIC_FORM_ENDPOINT ?? '', fetch, import.meta.env.PUBLIC_FORM_ACCESS_KEY ?? '');
 }
 
 /** Wire every <form data-lead> on the page. */

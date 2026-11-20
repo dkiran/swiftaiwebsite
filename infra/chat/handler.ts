@@ -47,17 +47,19 @@ export async function handleChat(req: Request, env: Env, deps: Deps): Promise<Re
   if (!deps.limiter.hit(ip)) return json(429, { error: 'rate_limited' });
 
   let msgs = (raw as Msg[]).slice(-FORWARD_LAST);
-  while (msgs.length && msgs[0].role !== 'user') msgs = msgs.slice(1);
+  while (msgs.length && msgs[0].role !== 'user') msgs = msgs.slice(1); // API needs a leading user turn
+  while (msgs.length && msgs[msgs.length - 1].role !== 'user') msgs = msgs.slice(0, -1); // no assistant prefill: a forged trailing turn would 400
   if (!msgs.length) return json(400, { error: 'invalid_messages' });
 
   try {
     const res = await deps.fetch('https://api.anthropic.com/v1/messages', {
       method: 'POST',
       headers: { 'content-type': 'application/json', 'x-api-key': env.ANTHROPIC_API_KEY, 'anthropic-version': '2023-06-01' },
-      body: JSON.stringify({ model: env.CHAT_MODEL || 'claude-haiku-5-5', max_tokens: 500, system: buildSystemPrompt(), messages: msgs }),
+      body: JSON.stringify({ model: env.CHAT_MODEL || 'claude-haiku-5-5', max_tokens: 1024, thinking: { type: 'disabled' }, system: buildSystemPrompt(), messages: msgs }),
     });
     if (!res.ok) return json(502, { error: 'upstream' });
-    const data = (await res.json()) as { content?: { type: string; text?: string }[] };
+    const data = (await res.json()) as { stop_reason?: string; content?: { type: string; text?: string }[] };
+    if (data.stop_reason === 'refusal') return json(502, { error: 'refused' });
     const reply = (data.content ?? []).filter((c) => c.type === 'text').map((c) => c.text).join('').trim();
     if (!reply) return json(502, { error: 'empty' });
     return json(200, { reply });

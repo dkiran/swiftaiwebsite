@@ -1,18 +1,18 @@
 ---
-title: "10 Business Processes Every MSME Can Automate with AI"
-description: "Ten practical processes MSMEs can automate with AI today, from lead follow-up to invoicing, with what to expect from each."
-tldr: "MSMEs get the fastest wins by automating high-volume, repetitive work: lead follow-up, customer queries, invoicing, payment reminders, data entry, scheduling, reporting, resume screening, inventory alerts and document checks."
+title: "10 Processes Small Businesses Can Automate with AI"
+description: "Ten practical processes small and mid-sized businesses can automate with AI today, from lead follow-up to invoicing, with what to expect from each."
+tldr: "Small and mid-sized businesses get the fastest wins by automating high-volume, repetitive work: lead follow-up, customer queries, invoicing, payment reminders, data entry, scheduling, reporting, resume screening, inventory alerts and document checks."
 date: 2026-11-05
 category: "AI Automation"
 readingMinutes: 6
 faq:
   - q: "Do I need technical staff to use these automations?"
     a: "No. They are built to run inside the tools you already use, such as WhatsApp, email, Google Sheets, Tally or your CRM. After setup, day-to-day use needs no technical skill."
-  - q: "Which process should an MSME automate first?"
-    a: "Start with the one that is highest volume, lowest risk and easiest to measure. For many MSMEs that is lead follow-up or answering repeated customer questions."
+  - q: "Which process should a small business automate first?"
+    a: "Start with the one that is highest volume, lowest risk and easiest to measure. For many small businesses that is lead follow-up or answering repeated customer questions."
 ---
 
-## Why MSMEs benefit most
+## Why small and mid-sized businesses benefit most
 
 Small and medium businesses rarely have spare people. When an owner or one key employee spends hours every day on follow-ups, entries and reminders, growth stalls. AI automation gives these businesses capacity without a proportional rise in headcount. Here are ten processes where we most often find value, roughly in order of how easy they are to start.
 

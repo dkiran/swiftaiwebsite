@@ -31,7 +31,8 @@ const slides: Slide[] = [
 ];
 ---
 <section class="hc" aria-roledescription="carousel" aria-label="What Swift AI does" id="hero-carousel">
-  <div class="container">
+  <div class="hc-blobs" aria-hidden="true"><i></i><i></i><i></i></div>
+  <div class="container hc-inner">
     <div class="hc-stage" aria-live="off">
       {slides.map((s, i) => {
         const H = i === 0 ? 'h1' : 'h2';
@@ -74,6 +75,7 @@ const slides: Slide[] = [
   const toggle = root.querySelector<HTMLButtonElement>('.hc-toggle')!;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
   const INTERVAL = 5000;
+  root.style.setProperty('--hc-interval', '5000ms');
   let i = 0, timer: number | undefined, userPaused = reduce, hover = false;
 
   const show = (n: number) => {
@@ -86,8 +88,12 @@ const slides: Slide[] = [
     });
     dots.forEach((d, k) => { d.classList.toggle('active', k === i); d.setAttribute('aria-selected', String(k === i)); });
   };
-  const stop = () => { if (timer) clearInterval(timer); timer = undefined; };
-  const start = () => { stop(); if (!userPaused && !hover && !document.hidden) timer = window.setInterval(() => show(i + 1), INTERVAL); };
+  const restartProgress = () => { const a = root.querySelector<HTMLElement>('.hc-dot.active'); if (!a) return; a.classList.remove('run'); void a.offsetWidth; a.classList.add('run'); };
+  const stop = () => { if (timer) clearInterval(timer); timer = undefined; root.classList.add('paused'); };
+  const start = () => {
+    stop();
+    if (!userPaused && !hover && !document.hidden) { timer = window.setInterval(() => show(i + 1), INTERVAL); root.classList.remove('paused'); restartProgress(); }
+  };
   const syncToggle = () => {
     toggle.setAttribute('aria-label', userPaused ? 'Start automatic slide show' : 'Pause automatic slide show');
     toggle.querySelector<HTMLElement>('.i-pause')!.style.display = userPaused ? 'none' : '';

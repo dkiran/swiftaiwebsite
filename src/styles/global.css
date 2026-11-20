@@ -228,16 +228,57 @@ input[type=range] { width: 100%; accent-color: var(--blue); }
 .hc-card .ico { width: 56px; height: 56px; border-radius: 16px; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; }
 .hc-card .checks li { font-size: 1.05rem; }
 @media (max-width: 860px) { .hc-slide { grid-template-columns: 1fr; } .hc-card { order: 2; } .hc-text .lead { max-width: none; } }
-/* carousel behaviour only when JS is available; without JS every slide is shown stacked */
-.js .hc.ready .hc-slide { opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), visibility 0s linear .6s; }
-.js .hc.ready .hc-slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
-.hc:not(.ready) .hc-stage { gap: 56px; }
-.hc:not(.ready) .hc-slide { grid-area: auto; }
+/* carousel layout applies as soon as JS is known to run (the .js class is set in <head>), so there is no flash of stacked slides; without JS every slide is shown stacked */
+.js .hc .hc-slide { opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), visibility 0s linear .6s; }
+.js .hc .hc-slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+html:not(.js) .hc .hc-stage { gap: 56px; }
+html:not(.js) .hc .hc-slide { grid-area: auto; }
 .hc-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 8px; }
 .hc-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: #fff; color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: background .2s; }
 .hc-btn:hover { background: var(--blue-soft); }
 .hc-dots { display: flex; gap: 10px; align-items: center; }
-.hc-dot { width: 10px; height: 10px; border-radius: 999px; border: 0; padding: 0; background: #c9ced8; cursor: pointer; transition: width .3s, background .3s; position: relative; }
+.hc-dot { width: 10px; height: 10px; border-radius: 999px; border: 0; padding: 0; background: #c9ced8; cursor: pointer; transition: width .3s, background .3s; position: relative; overflow: hidden; }
 .hc-dot::after { content: ''; position: absolute; inset: -12px -5px; } /* bigger touch target */
-.hc-dot.active { width: 30px; background: var(--blue); }
-@media (prefers-reduced-motion: reduce) { .js .hc.ready .hc-slide, .js .hc.ready .hc-slide.active { transition: none; transform: none; } }
+.hc-dot.active { width: 34px; background: oklch(88% 0.04 262); }
+.hc-dot::before { content: ''; position: absolute; inset: 0; background: var(--blue); transform-origin: left; transform: scaleX(0); border-radius: inherit; }
+.hc-dot.active::before { transform: scaleX(1); }
+.hc-dot.active.run::before { animation: hc-fill var(--hc-interval, 5000ms) linear forwards; }
+.hc.paused .hc-dot.active.run::before { animation-play-state: paused; }
+@media (prefers-reduced-motion: reduce) { .js .hc .hc-slide, .js .hc .hc-slide.active { transition: none; transform: none; } }
+
+/* Hero animations */
+.hc-inner { position: relative; z-index: 1; }
+.hc-blobs { position: absolute; inset: 0; z-index: 0; pointer-events: none; overflow: hidden; }
+.hc-blobs i { position: absolute; border-radius: 50%; filter: blur(70px); opacity: .55; }
+.hc-blobs i:nth-child(1) { width: 480px; height: 480px; left: -120px; top: -140px; background: oklch(85% 0.1 255); animation: hc-drift1 16s ease-in-out infinite alternate; }
+.hc-blobs i:nth-child(2) { width: 420px; height: 420px; right: -100px; top: 10%; background: oklch(86% 0.09 290); animation: hc-drift2 19s ease-in-out infinite alternate; }
+.hc-blobs i:nth-child(3) { width: 360px; height: 360px; left: 38%; bottom: -160px; background: oklch(88% 0.08 235); animation: hc-drift3 22s ease-in-out infinite alternate; }
+@keyframes hc-drift1 { to { transform: translate(120px, 90px) scale(1.15); } }
+@keyframes hc-drift2 { to { transform: translate(-130px, 70px) scale(.9); } }
+@keyframes hc-drift3 { to { transform: translate(-90px, -60px) scale(1.2); } }
+@keyframes hc-rise { from { opacity: 0; transform: translateY(26px); } to { opacity: 1; transform: none; } }
+@keyframes hc-pop { from { opacity: 0; transform: translateY(30px) scale(.94); } to { opacity: 1; transform: none; } }
+@keyframes hc-float { 0%, 100% { transform: translateY(0) rotate(0); } 50% { transform: translateY(-7px) rotate(-3deg); } }
+@keyframes hc-shimmer { from { background-position: 0% 50%; } to { background-position: 100% 50%; } }
+@keyframes hc-fill { from { transform: scaleX(0); } to { transform: scaleX(1); } }
+.js .hc .hc-slide.active .hc-text > * { animation: hc-rise .8s cubic-bezier(.2,.8,.2,1) both; }
+.js .hc .hc-slide.active .hc-text > :nth-child(1) { animation-delay: .05s; }
+.js .hc .hc-slide.active .hc-text > :nth-child(2) { animation-delay: .15s; }
+.js .hc .hc-slide.active .hc-text > :nth-child(3) { animation-delay: .3s; }
+.js .hc .hc-slide.active .hc-text > :nth-child(4) { animation-delay: .45s; }
+.js .hc .hc-slide.active .hc-card { animation: hc-pop .9s cubic-bezier(.2,.8,.2,1) .2s both; }
+.js .hc .hc-slide.active .hc-card .ico { animation: hc-float 4.5s ease-in-out 1.2s infinite; }
+.js .hc .hc-slide.active .hc-card li { animation: hc-rise .7s cubic-bezier(.2,.8,.2,1) both; }
+.js .hc .hc-slide.active .hc-card li:nth-child(1) { animation-delay: .5s; }
+.js .hc .hc-slide.active .hc-card li:nth-child(2) { animation-delay: .65s; }
+.js .hc .hc-slide.active .hc-card li:nth-child(3) { animation-delay: .8s; }
+.hc .hc-title .gradient { background: linear-gradient(100deg, var(--blue), oklch(62% 0.2 285), oklch(60% 0.2 235), var(--blue)); background-size: 250% 100%; -webkit-background-clip: text; background-clip: text; color: transparent; animation: hc-shimmer 6s ease-in-out infinite alternate; }
+.hc-btn:active { transform: scale(.92); }
+.hc .btn-primary { position: relative; overflow: hidden; }
+.hc .btn-primary::after { content: ''; position: absolute; inset: 0; background: linear-gradient(110deg, transparent 30%, rgba(255,255,255,.35) 50%, transparent 70%); transform: translateX(-120%); animation: hc-sheen 4.5s ease-in-out 1.5s infinite; }
+@keyframes hc-sheen { 0%, 60% { transform: translateX(-120%); } 100% { transform: translateX(120%); } }
+@media (prefers-reduced-motion: reduce) {
+  .hc-blobs i, .hc .hc-title .gradient, .hc .btn-primary::after { animation: none !important; }
+  .hc-dot.active::before { transform: scaleX(1) !important; animation: none !important; }
+  .js .hc .hc-slide.active .hc-text > *, .js .hc .hc-slide.active .hc-card, .js .hc .hc-slide.active .hc-card li, .js .hc .hc-slide.active .hc-card .ico { animation: none !important; opacity: 1; transform: none; }
+}

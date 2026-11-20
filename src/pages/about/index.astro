@@ -14,8 +14,8 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', 
   <section class="section alt"><div class="container"><div class="prose reveal">
     <h2>Who we are</h2>
     <p>Swift AI is the brand of <strong>{site.legalName}</strong>, a private limited company registered in India. We work with SMEs, MSMEs and startups on four things: AI automations, fractional and full-time CTO leadership, fast software development, and our own products, <a href={site.products.singleqr} rel="noopener">SingleQR</a> and <a href={site.products.singlestaff} rel="noopener">SingleStaff</a>.</p>
-    <h2>{founder.name ? `Led by ${founder.name}` : 'Founder-led'}</h2>
-    <p>Swift AI is founder-led by a technology leader with:</p>
+    <h2>{founder.name ? `Led by ${founder.name}, ${founder.title}` : 'Founder-led'}</h2>
+    <p>Swift AI is led by {founder.name || 'its founder'}, a technology leader with:</p>
     <ul>{founder.facts.map((f) => <li>{f}</li>)}</ul>
     <p>Our first focus is <a href="/transportation/">transportation, logistics and mobility technology</a>, where that experience matters most.</p>
     <h2>What we believe</h2>

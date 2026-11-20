@@ -47,7 +47,7 @@ const offers = [
   </div></section>
 
   <section class="section alt"><div class="container">
-    <div class="head reveal"><span class="eyebrow">Experience behind the work</span><h2>Led by someone who has done it.</h2></div>
+    <div class="head reveal"><span class="eyebrow">Experience behind the work</span><h2>{founder.name ? `Led by ${founder.name}.` : 'Led by someone who has done it.'}</h2></div>
     <div class="grid g2"><ul class="checks reveal">{founder.facts.map((f) => <li>{f}</li>)}</ul>
       <div class="card reveal d1"><h3>Where AI helps in transport</h3><p>Typical opportunities we look at in an audit: routine support on WhatsApp, driver and vehicle document checks, trip and invoice reconciliation, proof-of-delivery processing, and daily telematics summaries with unusual-pattern alerts. Results depend on your operation, and the audit ranks them for you.</p></div></div>
   </div></section>

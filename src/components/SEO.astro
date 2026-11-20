@@ -1,5 +1,5 @@
 ---
-import { site } from '../data/site';
+import { site, founder } from '../data/site';
 interface Props { title: string; description: string; path: string; ogType?: 'website' | 'article'; schema?: object[]; noindex?: boolean; }
 const { title, description, path, ogType = 'website', schema = [], noindex = false } = Astro.props;
 const fullTitle = path === '/' ? title : `${title} | ${site.name}`;
@@ -8,6 +8,7 @@ const og = new URL('/og-default.png', site.url).href;
 const base = [
   { '@context': 'https://schema.org', '@type': 'Organization', '@id': `${site.url}/#org`, name: site.name, legalName: site.legalName, url: site.url,
     logo: `${site.url}/favicon.svg`, description: site.tagline, slogan: site.slogan, areaServed: 'IN',
+    ...(founder.name ? { founder: { '@type': 'Person', name: founder.name, jobTitle: founder.title } } : {}),
     sameAs: Object.values(site.social).filter(Boolean),
     contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email, areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
   { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, publisher: { '@id': `${site.url}/#org` } },

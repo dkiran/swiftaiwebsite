@@ -26,6 +26,7 @@ export async function GET() {
 ${posts.map((p) => `- [${p.data.title}](${u(`/blog/${p.id}/`)}): ${p.data.description}`).join('\n')}
 
 ## Company
+- Founder: D Kiran Kumar (20+ years in software development; fractional CTO; transportation CTO experience; GPS telematics; BharatSelfDrive.com self-drive platform)
 - Legal name: ${site.legalName}
 - Country: India
 - Contact: ${u('/contact/')}

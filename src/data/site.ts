@@ -17,15 +17,17 @@ export const site = {
   },
 } as const;
 
-// Founder facts: ONLY what the founder has confirmed. Add `name` (exact form) when confirmed; it is shown only if non-empty.
+// Founder facts: ONLY what the founder has confirmed (name, title and BharatSelfDrive.com confirmed 2026-11-20).
 export const founder = {
-  name: '', // PLACEHOLDER: confirm exact name and title with the founder
+  name: 'D Kiran Kumar',
   title: 'Founder',
+  product: { name: 'BharatSelfDrive.com', url: 'https://bharatselfdrive.com', note: 'a self-drive platform' },
   facts: [
     '20+ years of experience in software development',
     'Experience as a fractional CTO for startups and companies',
     'CTO experience in transportation, including mobile app development for ride-hailing-style products',
     'Hands-on experience with GPS telematics',
+    'Product experience includes BharatSelfDrive.com, a self-drive platform',
   ],
 } as const;
 

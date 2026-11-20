@@ -214,3 +214,30 @@ input[type=range] { width: 100%; accent-color: var(--blue); }
 .chat-form button { border: 0; background: var(--blue); color: #fff; border-radius: 999px; padding: 0 18px; font: inherit; font-weight: 600; cursor: pointer; }
 .chat-form button:disabled { opacity: .5; cursor: default; }
 .chat-note { font-size: .72rem; color: var(--muted); text-align: center; padding: 0 12px 10px; background: #fff; margin: 0; }
+
+/* Hero carousel */
+.hc { padding: clamp(40px, 7vw, 88px) 0 clamp(32px, 5vw, 56px); position: relative; overflow: hidden; }
+.hc-stage { display: grid; }
+.hc-slide { grid-area: 1 / 1; display: grid; grid-template-columns: 1.15fr .85fr; gap: clamp(24px, 5vw, 64px); align-items: center; padding: 8px 0 24px; position: relative; }
+.hc-slide::before { content: ''; position: absolute; inset: -30% -20% auto; height: 120%; z-index: -1; background: radial-gradient(55% 55% at 30% 10%, var(--glow), transparent 70%); pointer-events: none; }
+.hc-title { font-size: clamp(2.4rem, 5.6vw, 4.75rem); font-weight: 600; letter-spacing: -0.035em; line-height: 1.04; margin: 0; }
+.hc-text .pill { margin-bottom: 22px; }
+.hc-text .lead { margin: 22px 0 0; max-width: 34ch; }
+.hc-card { background: rgba(255,255,255,.75); backdrop-filter: blur(14px); -webkit-backdrop-filter: blur(14px); border: 1px solid rgba(0,0,0,.06); border-radius: 28px; padding: clamp(24px, 3.4vw, 40px);
+  box-shadow: 0 40px 70px -40px rgba(11,21,48,.35); display: grid; gap: 22px; }
+.hc-card .ico { width: 56px; height: 56px; border-radius: 16px; background: var(--blue-soft); color: var(--blue); display: grid; place-items: center; }
+.hc-card .checks li { font-size: 1.05rem; }
+@media (max-width: 860px) { .hc-slide { grid-template-columns: 1fr; } .hc-card { order: 2; } .hc-text .lead { max-width: none; } }
+/* carousel behaviour only when JS is available; without JS every slide is shown stacked */
+.js .hc.ready .hc-slide { opacity: 0; visibility: hidden; transform: translateY(14px); transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1), visibility 0s linear .6s; }
+.js .hc.ready .hc-slide.active { opacity: 1; visibility: visible; transform: none; transition: opacity .6s ease, transform .6s cubic-bezier(.2,.8,.2,1); }
+.hc:not(.ready) .hc-stage { gap: 56px; }
+.hc:not(.ready) .hc-slide { grid-area: auto; }
+.hc-controls { display: flex; align-items: center; justify-content: center; gap: 14px; margin-top: 8px; }
+.hc-btn { width: 40px; height: 40px; border-radius: 50%; border: 1px solid var(--line); background: #fff; color: var(--ink); display: grid; place-items: center; cursor: pointer; transition: background .2s; }
+.hc-btn:hover { background: var(--blue-soft); }
+.hc-dots { display: flex; gap: 10px; align-items: center; }
+.hc-dot { width: 10px; height: 10px; border-radius: 999px; border: 0; padding: 0; background: #c9ced8; cursor: pointer; transition: width .3s, background .3s; position: relative; }
+.hc-dot::after { content: ''; position: absolute; inset: -12px -5px; } /* bigger touch target */
+.hc-dot.active { width: 30px; background: var(--blue); }
+@media (prefers-reduced-motion: reduce) { .js .hc.ready .hc-slide, .js .hc.ready .hc-slide.active { transition: none; transform: none; } }

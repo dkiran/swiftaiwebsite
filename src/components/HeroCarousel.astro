@@ -1,0 +1,118 @@
+---
+import Icon from './Icon.astro';
+import { site } from '../data/site';
+
+type Slide = { id: string; icon: string; eyebrow: string; title: string; lead: string; points: string[]; primary: [string, string]; secondary?: [string, string]; glow: string };
+const slides: Slide[] = [
+  { id: 'overview', icon: 'bolt', eyebrow: 'Free AI Audit for SMEs and MSMEs', title: 'AI that works <span class="gradient">while you sleep.</span>',
+    lead: 'Swift AI automates the repetitive work in your business, and gives startups the CTO they need to build fast.',
+    points: ['AI automations for SMEs and MSMEs', 'Fractional and full-time CTOs', 'Software built at 10x speed'],
+    primary: ['/book-ai-audit/', 'Book a free AI Audit'], secondary: ['/get-started/', "I'm a startup founder"], glow: 'oklch(92% 0.06 258 / .9)' },
+  { id: 'automation', icon: 'cpu', eyebrow: 'AI Automations', title: 'Automate the work <span class="gradient">nobody enjoys.</span>',
+    lead: 'We understand your business first, then implement AI automations wherever they genuinely save time and money.',
+    points: ['Customer support on WhatsApp, email and chat', 'Lead follow-up, invoicing and reporting', 'Works inside the tools you already use'],
+    primary: ['/ai-automations/', 'Explore AI Automations'], secondary: ['/ai-automations/roi-calculator/', 'Calculate your savings'], glow: 'oklch(93% 0.05 240 / .9)' },
+  { id: 'cto', icon: 'compass', eyebrow: 'Fractional CTO', title: 'A CTO for your company, <span class="gradient">without the full-time cost.</span>',
+    lead: 'Senior technology leadership for startup founders and SMEs, technical or not. Part-time to start, full-time when you are ready.',
+    points: ['Advisory, hands-on or build-a-team', 'Strategy, architecture, hiring and delivery', 'Start part-time, go full-time later'],
+    primary: ['/fractional-cto/', 'Explore Fractional CTO'], secondary: ['/fractional-cto/cost-calculator/', 'Estimate the cost'], glow: 'oklch(93% 0.05 275 / .9)' },
+  { id: 'products', icon: 'box', eyebrow: 'Products', title: 'Software we <span class="gradient">build and run.</span>',
+    lead: 'SingleQR and SingleStaff are our own products, built and operated by Swift AI.',
+    points: ['SingleQR at singleqr.in', 'SingleStaff at singlestaff.com', 'Built and operated by Swift AI'],
+    primary: ['/products/', 'See our products'], secondary: [site.products.singleqr, 'Visit SingleQR'], glow: 'oklch(93% 0.05 225 / .9)' },
+  { id: 'consultation', icon: 'code', eyebrow: 'Consultation', title: 'Software development at <span class="gradient">10x speed.</span>',
+    lead: 'AI-assisted engineering, ruthless scoping and short feedback loops. Weeks, not months.',
+    points: ['Web apps, mobile apps and SaaS products', 'Working software every week', 'Scope, timeline and price agreed in writing'],
+    primary: ['/consultation/', 'Explore Consultation'], secondary: ['/get-started/', 'Request an appointment'], glow: 'oklch(93% 0.05 250 / .9)' },
+  { id: 'network', icon: 'users', eyebrow: 'CTO Network', title: 'Hire or join a network of <span class="gradient">technology leaders.</span>',
+    lead: 'We are registering experienced CTOs so companies of any size can bring one in, fractionally or full-time.',
+    points: ['Companies: request a CTO for your needs', 'CTOs: register your experience', 'Applications reviewed by our team'],
+    primary: ['/hire-a-cto/', 'Hire a CTO'], secondary: ['/join-as-a-cto/', 'Join as a CTO'], glow: 'oklch(93% 0.05 265 / .9)' },
+];
+---
+<section class="hc" aria-roledescription="carousel" aria-label="What Swift AI does" id="hero-carousel">
+  <div class="container">
+    <div class="hc-stage" aria-live="off">
+      {slides.map((s, i) => {
+        const H = i === 0 ? 'h1' : 'h2';
+        return (
+          <div class={`hc-slide${i === 0 ? ' active' : ''}`} role="group" aria-roledescription="slide" aria-label={`${i + 1} of ${slides.length}`} style={`--glow:${s.glow}`}>
+            <div class="hc-text">
+              <span class="pill">{s.eyebrow}</span>
+              <H class="hc-title" set:html={s.title} />
+              <p class="lead">{s.lead}</p>
+              <div class="btns">
+                <a class="btn btn-primary" href={s.primary[0]}>{s.primary[1]}</a>
+                {s.secondary && <a class="btn btn-ghost" href={s.secondary[0]} rel={s.secondary[0].startsWith('http') ? 'noopener' : undefined}>{s.secondary[1]}</a>}
+              </div>
+            </div>
+            <div class="hc-card" aria-hidden="false">
+              <span class="ico"><Icon name={s.icon} size={28} /></span>
+              <ul class="checks">{s.points.map((p) => <li>{p}</li>)}</ul>
+            </div>
+          </div>
+        );
+      })}
+    </div>
+    <div class="hc-controls">
+      <button class="hc-btn hc-prev" aria-label="Previous slide" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M15 5l-7 7 7 7"/></svg></button>
+      <div class="hc-dots" role="tablist" aria-label="Choose slide">
+        {slides.map((s, i) => <button type="button" role="tab" class={`hc-dot${i === 0 ? ' active' : ''}`} aria-label={`Show slide ${i + 1}: ${s.eyebrow}`} aria-selected={i === 0 ? 'true' : 'false'}></button>)}
+      </div>
+      <button class="hc-btn hc-next" aria-label="Next slide" type="button"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"><path d="M9 5l7 7-7 7"/></svg></button>
+      <button class="hc-btn hc-toggle" aria-label="Pause automatic slide show" type="button">
+        <svg class="i-pause" width="16" height="16" viewBox="0 0 24 24" fill="currentColor"><rect x="6" y="5" width="4" height="14" rx="1"/><rect x="14" y="5" width="4" height="14" rx="1"/></svg>
+        <svg class="i-play" width="16" height="16" viewBox="0 0 24 24" fill="currentColor" style="display:none"><path d="M8 5v14l11-7z"/></svg>
+      </button>
+    </div>
+  </div>
+</section>
+<script>
+  const root = document.getElementById('hero-carousel')!;
+  const slides = [...root.querySelectorAll<HTMLElement>('.hc-slide')];
+  const dots = [...root.querySelectorAll<HTMLButtonElement>('.hc-dot')];
+  const toggle = root.querySelector<HTMLButtonElement>('.hc-toggle')!;
+  const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
+  const INTERVAL = 7000;
+  let i = 0, timer: number | undefined, userPaused = reduce, hover = false;
+
+  const show = (n: number) => {
+    i = (n + slides.length) % slides.length;
+    slides.forEach((s, k) => {
+      const on = k === i;
+      s.classList.toggle('active', on);
+      s.toggleAttribute('inert', !on);
+      s.setAttribute('aria-hidden', String(!on));
+    });
+    dots.forEach((d, k) => { d.classList.toggle('active', k === i); d.setAttribute('aria-selected', String(k === i)); });
+  };
+  const stop = () => { if (timer) clearInterval(timer); timer = undefined; };
+  const start = () => { stop(); if (!userPaused && !hover && !document.hidden) timer = window.setInterval(() => show(i + 1), INTERVAL); };
+  const syncToggle = () => {
+    toggle.setAttribute('aria-label', userPaused ? 'Start automatic slide show' : 'Pause automatic slide show');
+    toggle.querySelector<HTMLElement>('.i-pause')!.style.display = userPaused ? 'none' : '';
+    toggle.querySelector<HTMLElement>('.i-play')!.style.display = userPaused ? '' : 'none';
+  };
+  const go = (n: number) => { show(n); start(); };
+
+  root.querySelector('.hc-prev')!.addEventListener('click', () => go(i - 1));
+  root.querySelector('.hc-next')!.addEventListener('click', () => go(i + 1));
+  dots.forEach((d, k) => d.addEventListener('click', () => go(k)));
+  toggle.addEventListener('click', () => { userPaused = !userPaused; syncToggle(); start(); });
+  root.addEventListener('mouseenter', () => { hover = true; stop(); });
+  root.addEventListener('mouseleave', () => { hover = false; start(); });
+  root.addEventListener('focusin', () => { hover = true; stop(); });
+  root.addEventListener('focusout', () => { hover = false; start(); });
+  document.addEventListener('visibilitychange', start);
+  root.addEventListener('keydown', (e) => {
+    if (e.key === 'ArrowRight') go(i + 1); else if (e.key === 'ArrowLeft') go(i - 1);
+  });
+  // swipe
+  let x0 = 0;
+  const stage = root.querySelector('.hc-stage')!;
+  stage.addEventListener('pointerdown', (e) => { x0 = (e as PointerEvent).clientX; });
+  stage.addEventListener('pointerup', (e) => { const dx = (e as PointerEvent).clientX - x0; if (Math.abs(dx) > 50) go(i + (dx < 0 ? 1 : -1)); });
+
+  root.classList.add('ready');
+  show(0); syncToggle(); start();
+</script>

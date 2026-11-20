@@ -22,18 +22,43 @@ If your instance runs Amazon Linux, use these instead of the Ubuntu-style comman
 - **MySQL:** the client is `mysql` and the service is `mysqld` or `mariadb` (check with `systemctl list-units | grep -Ei "mysql|maria"`). If MySQL runs in Docker, put `docker exec -i <container>` in front of `mysql` commands.
 - **Installing nginx** (if it is not there yet): `sudo dnf install -y nginx && sudo systemctl enable --now nginx`.
 
-## 0c. Getting the code onto the server (pick one)
-**Option 0: upload a ready-made package (easiest, nothing is built on the server).** On any computer with Node 20+ and the repository, run `scripts/package-release.sh`. It creates `release/swiftai-release.tar.gz` containing the website files, the API, the database schema and the config files. Upload it, then on the server:
+## 0c. Getting the code onto the server: git pull, build, publish (recommended)
+After the one-time setup in this guide, every change is **one command on the server**: `cd ~/swiftaiwebsite && scripts/deploy-local.sh`.
+It pulls the latest code, builds, publishes the website and the API, restarts the service, checks health, and keeps the previous version for rollback.
+
+**First time only**
+1. **Swap memory** (small instances, 2 GB or less; building the site needs memory):
+   `sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`
+   (add `/swapfile none swap sw 0 0` to `/etc/fstab` to keep it after a reboot).
+2. **A read-only key so the server can pull the private repository:**
+   ```bash
+   ssh-keygen -t ed25519 -f ~/.ssh/swiftai_deploy -N "" -C "swiftai-server"
+   cat ~/.ssh/swiftai_deploy.pub        # copy this line
+   ```
+   On GitHub: repository > Settings > Deploy keys > Add deploy key, paste it, leave "Allow write access" OFF.
+   Use a dedicated host alias so it cannot clash with SingleQR's git setup: add this to `~/.ssh/config` (then `chmod 600 ~/.ssh/config`):
+   ```
+   Host github-swiftai
+     HostName github.com
+     User git
+     IdentityFile ~/.ssh/swiftai_deploy
+     IdentitiesOnly yes
+   ```
+3. **Clone** (use the branch you deploy from; `main` once you merge, until then the working branch):
+   `git clone -b claude/optimistic-cray-185hzk git@github-swiftai:dkiran/swiftaiwebsite.git ~/swiftaiwebsite`
+4. Make sure the folders exist and are yours: `sudo mkdir -p /var/www/swiftai /opt/swiftai-api && sudo chown $USER:$USER /var/www/swiftai /opt/swiftai-api`
+5. Do the one-time setup below (database, secrets file, service user, systemd service, nginx, HTTPS), then run the first deploy.
+
+**Every change after that**
 ```bash
-mkdir -p ~/swiftai-release && tar xzf swiftai-release.tar.gz -C ~/swiftai-release
-sudo mkdir -p /var/www/swiftai /opt/swiftai-api
-sudo cp -a ~/swiftai-release/site/. /var/www/swiftai/
-sudo cp -a ~/swiftai-release/api/. /opt/swiftai-api/
-cd /opt/swiftai-api && sudo npm install --omit=dev --no-audit --no-fund
-sudo systemctl restart swiftai-api
+cd ~/swiftaiwebsite && scripts/deploy-local.sh
 ```
-**Option 1: deploy from your computer with the scripts.** `scripts/deploy-ec2.sh ec2-user@IP key.pem` (website) and `scripts/deploy-api.sh ec2-user@IP key.pem` (API). Needs Node 20+, `rsync` and your key file on your computer.
-**Option 2: build on the server.** Clone the repository on the server (a private repository needs a read-only deploy key: `ssh-keygen -t ed25519 -f ~/.ssh/swiftai_deploy -N ""`, add the public key under the repository's Settings > Deploy keys, then `git clone`). Run `scripts/deploy-local.sh`. A small instance (1 GB memory) may run out of memory while building; add swap first: `sudo dd if=/dev/zero of=/swapfile bs=1M count=2048 && sudo chmod 600 /swapfile && sudo mkswap /swapfile && sudo swapon /swapfile`.
+**Roll back** the last deploy: `scripts/rollback-local.sh`.
+
+Notes
+- The build prints some "Unsupported engine" warnings on Node 20.11. They are only warnings and the build works. Upgrading the server to Node 20.19 or newer removes them (only do that if SingleQR is fine with it).
+- Run the tests before pushing (`npm test`); the server does not run them.
+- Other ways to deliver code if you ever need them: upload a package built with `scripts/package-release.sh`, or deploy from your own computer with `scripts/deploy-ec2.sh` and `scripts/deploy-api.sh`.
 
 ## 1. Server basics (once)
 1. Security group: allow 22 (your IP only), 80 and 443 (anywhere). Do NOT open 3100 or 3306 to the internet.

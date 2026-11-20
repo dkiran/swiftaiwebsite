@@ -73,7 +73,7 @@ const slides: Slide[] = [
   const dots = [...root.querySelectorAll<HTMLButtonElement>('.hc-dot')];
   const toggle = root.querySelector<HTMLButtonElement>('.hc-toggle')!;
   const reduce = matchMedia('(prefers-reduced-motion: reduce)').matches;
-  const INTERVAL = 7000;
+  const INTERVAL = 5000;
   let i = 0, timer: number | undefined, userPaused = reduce, hover = false;
 
   const show = (n: number) => {

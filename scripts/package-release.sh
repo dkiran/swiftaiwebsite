@@ -15,7 +15,7 @@ cp -a dist/. release/pkg/site/
 cp server/dist/main.mjs release/pkg/api/main.mjs
 cp server/package.deploy.json release/pkg/api/package.json
 cp server/schema.sql release/pkg/db/
-cp deploy/nginx-swiftai.conf deploy/swiftai-api.service deploy/server.env.example release/pkg/config/
+cp deploy/nginx-swiftai.conf deploy/nginx-swiftai-ssl.conf deploy/swiftai-locations.inc deploy/swiftai-api.service deploy/server.env.example release/pkg/config/
 cp docs/deployment.md release/pkg/docs/
 tar -C release/pkg -czf release/swiftai-release.tar.gz .
 echo "Built release/swiftai-release.tar.gz"

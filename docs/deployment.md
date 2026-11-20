@@ -15,10 +15,10 @@ SingleQR keeps running as it does today. We add a separate nginx site file, a se
 
 ## 0b. Amazon Linux (ec2-user) differences
 If your instance runs Amazon Linux, use these instead of the Ubuntu-style commands below. Everywhere the guide says `ubuntu@`, use `ec2-user@`.
-- **nginx config:** there is no `sites-available` or `sites-enabled`. Copy the file to `/etc/nginx/conf.d/swiftai.conf` (nginx already includes everything in `conf.d`), then `sudo nginx -t && sudo systemctl reload nginx`. Leave SingleQR's existing file alone.
+- **nginx config:** there is no `sites-available` or `sites-enabled`. Our file goes in `/etc/nginx/conf.d/swiftai.conf` (nginx already includes everything in `conf.d`); follow section 4. Leave SingleQR's existing file alone.
 - **Node for the service:** the service runs as its own user and cannot use a Node installed under your home folder (for example nvm). Run `which node`. If it prints `/usr/bin/node` or `/usr/local/bin/node`, you are fine. If it is under `/home/ec2-user/...`, run `sudo cp "$(which node)" /usr/local/bin/node` and set `ExecStart=/usr/local/bin/node /opt/swiftai-api/main.mjs` in the service file.
 - **Service user:** `sudo useradd --system --no-create-home --shell /sbin/nologin swiftai`
-- **HTTPS (certbot):** `sudo dnf install -y augeas-libs python3-pip && sudo python3 -m venv /opt/certbot && sudo /opt/certbot/bin/pip install certbot certbot-nginx && sudo ln -sf /opt/certbot/bin/certbot /usr/bin/certbot`, then `sudo certbot --nginx -d swift-ai.in -d www.swift-ai.in`. Renewal: `echo "0 3 * * * root /opt/certbot/bin/certbot renew -q" | sudo tee /etc/cron.d/certbot-renew`.
+- **HTTPS (certbot):** certbot is probably already installed for SingleQR (`certbot --version`). If not: `sudo dnf install -y augeas-libs python3-pip && sudo python3 -m venv /opt/certbot && sudo /opt/certbot/bin/pip install certbot certbot-nginx && sudo ln -sf /opt/certbot/bin/certbot /usr/bin/certbot`, then follow section 4 (webroot method). Renewal: `echo "0 3 * * * root /opt/certbot/bin/certbot renew -q" | sudo tee /etc/cron.d/certbot-renew`.
 - **MySQL:** the client is `mysql` and the service is `mysqld` or `mariadb` (check with `systemctl list-units | grep -Ei "mysql|maria"`). If MySQL runs in Docker, put `docker exec -i <container>` in front of `mysql` commands.
 - **Installing nginx** (if it is not there yet): `sudo dnf install -y nginx && sudo systemctl enable --now nginx`.
 
@@ -102,15 +102,36 @@ MySQL should listen on localhost only (`bind-address = 127.0.0.1`). Later phases
    It runs the tests, builds, uploads, installs dependencies on the server, restarts the service and prints `{"ok":true}` when healthy.
 5. See the log if needed: `sudo journalctl -u swiftai-api -n 50 --no-pager`.
 
-## 4. nginx and HTTPS
-1. Copy `deploy/nginx-swiftai.conf` to `/etc/nginx/sites-available/swiftai`, then:
+## 4. nginx and HTTPS (matches how singleqr.in is set up)
+SingleQR has its own `server` blocks for `singleqr.in` (proxy to port 3001, Let's Encrypt certificate, security blocks). Ours is a separate set of blocks for `swift-ai.in` (static files plus `/api/` to port 3100). nginx chooses the block by domain name, so they do not interfere, and nothing of SingleQR is edited. We use the same layout: HTTP redirects to HTTPS, one HTTPS block per site, the same blocking of `.env`, `.git`, PHP and WordPress probes. Both configs were tested next to a replica of the SingleQR config with a real nginx.
+
+Run these from the repository clone on the server (the website files must already be in `/var/www/swiftai`, so run `scripts/deploy-local.sh` once first).
+
+1. **Point DNS** at this server: `A` records for `swift-ai.in` and `www.swift-ai.in`. Check: `dig +short swift-ai.in` (or `nslookup swift-ai.in`) shows the server's public IP.
+2. **Install the HTTP-only config** (this lets Let's Encrypt verify the domain):
    ```bash
-   sudo ln -s /etc/nginx/sites-available/swiftai /etc/nginx/sites-enabled/swiftai
+   sudo cp deploy/swiftai-locations.inc /etc/nginx/swiftai-locations.inc
+   sudo cp deploy/nginx-swiftai.conf /etc/nginx/conf.d/swiftai.conf
    sudo nginx -t && sudo systemctl reload nginx
    ```
-   (Do not remove SingleQR's site file. `default` can be removed only if SingleQR does not use it.)
-2. Upload the website: `scripts/deploy-ec2.sh ubuntu@YOUR_SERVER_IP path/to/key.pem` (first create the folder: `sudo mkdir -p /var/www/swiftai && sudo chown $USER:$USER /var/www/swiftai`).
-3. Free HTTPS: `sudo snap install --classic certbot && sudo certbot --nginx -d swift-ai.in -d www.swift-ai.in` (choose redirect to HTTPS). Renewal is automatic.
+   Check `http://swift-ai.in` shows the site.
+3. **Get the certificate** with the "webroot" method. It does not touch SingleQR's config or certificate:
+   ```bash
+   certbot --version        # certbot is probably already installed for singleqr.in
+   sudo certbot certonly --webroot -w /var/www/swiftai -d swift-ai.in -d www.swift-ai.in
+   ```
+   (If certbot is missing, use the install steps in the Amazon Linux section.)
+4. **Switch to the HTTPS config** (replaces the HTTP-only file):
+   ```bash
+   sudo cp deploy/nginx-swiftai-ssl.conf /etc/nginx/conf.d/swiftai.conf
+   sudo nginx -t && sudo systemctl reload nginx
+   ```
+5. **Renewals:** your server already renews SingleQR's certificate automatically; the new certificate is renewed by the same job. Check: `sudo certbot renew --dry-run`.
+
+Notes
+- Use `sudo nginx -t` before every reload. If it complains about a duplicate `limit_req_zone swiftai_api`, only one file may define it: keep it in `swiftai.conf` only.
+- If the SingleQR file on your server contains the same `server` blocks twice, `nginx -t` warns about "conflicting server name". That is a SingleQR file issue (not ours), but worth cleaning up.
+- The files that make this work are `deploy/swiftai-locations.inc`, `deploy/nginx-swiftai.conf` and `deploy/nginx-swiftai-ssl.conf`.
 
 ## 5. Check everything
 - `curl https://swift-ai.in/api/health` returns `{"ok":true}`.

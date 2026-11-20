@@ -3,9 +3,11 @@ import Base from '../../../layouts/Base.astro';
 import CTA from '../../../components/CTA.astro';
 import FAQ from '../../../components/FAQ.astro';
 import { site } from '../../../data/site';
+import { rates } from '../../../data/pricing';
+import { inr } from '../../../lib/calc';
 import { breadcrumbSchema } from '../../../lib/schema';
 const faqs = [
-  { q: 'How do you calculate the ROI of AI automation?', a: 'Multiply tasks per month by minutes per task to get hours, multiply by the share you can automate, then by the hourly cost of the person doing the work. That gives monthly savings. Divide the build cost by monthly savings to get payback time.' },
+  { q: 'How do you calculate the ROI of AI automation?', a: `Multiply tasks per month by minutes per task to get hours, multiply by the share you can automate, then by the hourly cost of the person doing the work. That gives monthly savings. The build is estimated at ${inr(rates.aiBuildPerHour)} per hour based on complexity and an estimate of hours, and dividing that build cost by monthly savings gives the payback time.` },
   { q: 'How accurate is this calculator?', a: 'It is an indicative estimate based on your inputs and simplified assumptions. A free AI Audit replaces the assumptions with your real processes and gives a more reliable figure.' },
 ];
 const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Automations', path: '/ai-automations/' }, { name: 'ROI calculator', path: '/ai-automations/roi-calculator/' }]),
@@ -19,9 +21,9 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Autom
       <p class="lead">See how many hours and rupees a single automation could save you, and how fast it pays for itself.</p></div>
     <div class="calc" id="roi-calc">
       <div class="form">
-        <div class="field"><label for="process">Which process?</label><select id="process">
-          <option value="support">Customer support</option><option value="sales">Sales lead follow-up</option><option value="finance">Invoicing and finance ops</option>
-          <option value="hr">HR and recruiting</option><option value="reporting">Reporting</option><option value="documents">Document processing</option></select></div>
+        <div class="field"><label for="complexity">How complex is the automation?</label><select id="complexity">
+          <option value="simple">Simple: one workflow, one or two tools</option><option value="standard" selected>Standard: several steps and tools</option><option value="complex">Complex: many systems, custom AI</option></select></div>
+        <div class="field"><label for="bhours">Estimated build hours (editable)</label><input id="bhours" type="number" min="0" value="100" inputmode="numeric" /></div>
         <div class="row">
           <div class="field"><label for="tasks">Tasks per month</label><input id="tasks" type="number" min="0" value="300" inputmode="numeric" /></div>
           <div class="field"><label for="mins">Minutes per task</label><input id="mins" type="number" min="0" value="10" inputmode="numeric" /></div>
@@ -35,10 +37,10 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Autom
         <hr />
         <div class="range-row"><span>Hours saved per month</span><b id="hours">–</b></div>
         <div class="range-row" style="margin-top:10px"><span>Saved per year</span><b id="year">–</b></div>
-        <div class="range-row" style="margin-top:10px"><span>Typical build cost</span><b id="build">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Build cost (hours × ₹2,500)</span><b id="build">–</b></div>
         <div class="range-row" style="margin-top:10px"><span>Payback</span><b id="payback">–</b></div>
         <a class="btn btn-primary" href="/book-ai-audit/" style="width:100%;margin-top:22px">Get my real numbers: free audit</a>
-        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. Build cost is a typical assumption for this kind of project.</p>
+        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. AI automation builds are charged at ₹2,500 per hour, based on complexity and an estimate of hours. The hours here are typical starting points, so your audit gives the real figure.</p>
       </div>
     </div>
   </div></section>
@@ -46,10 +48,10 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Autom
   <CTA />
 </Base>
 <script>
-  import { estimateRoi, inr } from '../../../lib/calc';
+  import { estimateRoi, inr, defaultBuildHours, type Complexity } from '../../../lib/calc';
   const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
   const run = () => {
-    const r = estimateRoi({ process: $('process').value, tasksPerMonth: +$('tasks').value, minutesPerTask: +$('mins').value, hourlyCostInr: +$('cost').value, automationPct: +$('pct').value });
+    const r = estimateRoi({ buildHours: +$('bhours').value, tasksPerMonth: +$('tasks').value, minutesPerTask: +$('mins').value, hourlyCostInr: +$('cost').value, automationPct: +$('pct').value });
     $('pct-v').textContent = $('pct').value;
     $('saved').textContent = inr(r.savedMonthlyInr);
     $('hours').textContent = r.hoursSavedMonthly.toLocaleString('en-IN', { maximumFractionDigits: 1 });
@@ -57,6 +59,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'AI Autom
     $('build').textContent = inr(r.buildCostInr);
     $('payback').textContent = r.paybackMonths === null ? 'Enter your numbers' : r.paybackMonths < 1 ? 'Under a month' : `${r.paybackMonths.toFixed(1)} months`;
   };
+  $('complexity').addEventListener('input', () => { $('bhours').value = String(defaultBuildHours($('complexity').value as Complexity)); });
   document.querySelectorAll('#roi-calc input, #roi-calc select').forEach((e) => e.addEventListener('input', run));
   run();
 </script>

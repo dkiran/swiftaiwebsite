@@ -5,7 +5,7 @@ import FAQ from '../../../components/FAQ.astro';
 import { site } from '../../../data/site';
 import { breadcrumbSchema } from '../../../lib/schema';
 const faqs = [
-  { q: 'How much does a fractional CTO cost in India?', a: 'Swift AI charges ₹1,500 per hour for fractional CTO time, and early-stage startups can start from ₹850 per hour depending on scope. This calculator turns your hours per week and duration into an indicative monthly and total range, and compares it with the yearly cost of a full-time CTO. It is an estimate, not a quote.' },
+  { q: 'How much does a fractional CTO cost in India?', a: 'Swift AI charges ₹1,500 per hour for fractional CTO time, and early-stage startups can start from ₹850 per hour depending on scope. This calculator turns your hours per week and duration into an indicative monthly and total range, and compares it with full-time CTO packages, which start from ₹36 lakh per year remote and ₹50 lakh per year on-site. It is an estimate, not a quote.' },
   { q: 'Is a fractional CTO cheaper than a full-time CTO?', a: 'Usually yes for early-stage companies, because you pay only for the hours you need and carry no long-term salary commitment. As the workload grows toward full-time, the gap narrows.' },
 ];
 const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fractional CTO', path: '/fractional-cto/' }, { name: 'Cost calculator', path: '/fractional-cto/cost-calculator/' }]),
@@ -29,10 +29,11 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fraction
         <div class="big" id="monthly">–</div>
         <hr />
         <div class="range-row"><span>Total over <span id="m2">6</span> months</span><b id="total">–</b></div>
-        <div class="range-row" style="margin-top:10px"><span>Full-time CTO, per year*</span><b id="ft">–</b></div>
+        <div class="range-row" style="margin-top:10px"><span>Full-time CTO, remote, from*</span><b id="ftr">–</b></div>
+        <div class="range-row" style="margin-top:6px"><span>Full-time CTO, on-site, from*</span><b id="fto">–</b></div>
         <p id="verdict" style="margin-top:18px"></p>
         <a class="btn btn-primary" href="/hire-a-cto/" style="width:100%">Hire a CTO</a>
-        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. *The full-time figure is a rough market benchmark, not a Swift AI price. Taxes as applicable.</p>
+        <p style="font-size:.8rem;margin:14px 0 0">Indicative estimate, not a quote. *Full-time CTO packages start from ₹36 lakh per year remote and ₹50 lakh per year on-site. Taxes as applicable.</p>
       </div>
     </div>
   </div></section>
@@ -48,10 +49,11 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fraction
     $('hours-v').textContent = String(v.hoursPerWeek); $('months-v').textContent = String(v.months); $('m2').textContent = String(v.months);
     $('monthly').textContent = r.monthlyMin === r.monthlyMax ? inr(r.monthlyMax) : `${inr(r.monthlyMin)} – ${inr(r.monthlyMax)}`;
     $('total').textContent = r.totalMin === r.totalMax ? inr(r.totalMax) : `${inr(r.totalMin)} – ${inr(r.totalMax)}`;
-    $('ft').textContent = inr(r.fullTimeYearly);
+    $('ftr').textContent = inr(r.fullTimeRemoteYearly);
+    $('fto').textContent = inr(r.fullTimeOnsiteYearly);
     const fractionalYear = r.monthlyMax * 12;
-    $('verdict').textContent = fractionalYear < r.fullTimeYearly
-      ? `At this level a fractional CTO costs at least ${Math.round((1 - fractionalYear / r.fullTimeYearly) * 100)}% less per year than a full-time CTO (based on the top of the range).`
+    $('verdict').textContent = fractionalYear < r.fullTimeRemoteYearly
+      ? `At this level a fractional CTO costs at least ${Math.round((1 - fractionalYear / r.fullTimeRemoteYearly) * 100)}% less per year than a remote full-time CTO package (based on the top of the range).`
       : 'At this many hours, a full-time CTO may be the better value. Talk to us about the right setup.';
   };
   document.querySelectorAll('#cto-calc input, #cto-calc select').forEach((e) => e.addEventListener('input', run));

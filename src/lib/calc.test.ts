@@ -1,5 +1,5 @@
 import { describe, it, expect } from 'vitest';
-import { estimateCto, estimateRoi } from './calc';
+import { estimateCto, estimateRoi, defaultBuildHours } from './calc';
 import { pricing } from '../data/pricing';
 
 const cto = { stage: 'mvp', hoursPerWeek: 12, months: 6 } as const;
@@ -24,8 +24,12 @@ describe('estimateCto', () => {
     expect(r.monthlyMin).toBe(0);
     expect(r.totalMax).toBe(0);
   });
-  it('reports the full-time benchmark from pricing for the stage', () => {
-    expect(estimateCto(cto).fullTimeYearly).toBe(pricing.cto.fullTimeYearly.mvp);
+  it('reports full-time CTO packages from ₹50 lakh on-site and ₹36 lakh remote per year, for any stage', () => {
+    for (const stage of ['idea', 'mvp', 'scaling'] as const) {
+      const r = estimateCto({ ...cto, stage });
+      expect(r.fullTimeOnsiteYearly).toBe(5000000);
+      expect(r.fullTimeRemoteYearly).toBe(3600000);
+    }
   });
   it('prices startups at ₹850–₹1,500 per hour (10 h/week ≈ 43.3 h/month)', () => {
     const r = estimateCto({ stage: 'mvp', hoursPerWeek: 10, months: 1 });
@@ -40,16 +44,19 @@ describe('estimateCto', () => {
 });
 
 describe('estimateRoi', () => {
-  const roi = { process: 'support', tasksPerMonth: 100, minutesPerTask: 30, hourlyCostInr: 500, automationPct: 80 };
+  const roi = { buildHours: 80, tasksPerMonth: 100, minutesPerTask: 30, hourlyCostInr: 500, automationPct: 80 };
   it('computes hours and rupees saved', () => {
     const r = estimateRoi(roi);
     expect(r.hoursSavedMonthly).toBe(40);
     expect(r.savedMonthlyInr).toBe(20000);
     expect(r.savedYearlyInr).toBe(240000);
   });
+  it('prices the build at ₹2,500 per hour of estimated effort', () => {
+    expect(estimateRoi(roi).buildCostInr).toBe(200000);
+    expect(pricing.roi.buildRatePerHour).toBe(2500);
+  });
   it('payback is build cost divided by monthly saving', () => {
-    const r = estimateRoi(roi);
-    expect(r.paybackMonths).toBeCloseTo(r.buildCostInr / 20000, 5);
+    expect(estimateRoi(roi).paybackMonths).toBeCloseTo(10, 5);
   });
   it('payback is null when nothing is saved', () => {
     expect(estimateRoi({ ...roi, tasksPerMonth: 0 }).paybackMonths).toBeNull();
@@ -58,16 +65,16 @@ describe('estimateRoi', () => {
     expect(estimateRoi({ ...roi, automationPct: 250 }).hoursSavedMonthly).toBe(50);
     expect(estimateRoi({ ...roi, minutesPerTask: -10 }).savedMonthlyInr).toBe(0);
   });
-  it('falls back to a default build cost for an unknown process', () => {
-    expect(estimateRoi({ ...roi, process: 'unknown' }).buildCostInr).toBe(pricing.roi.defaultBuildCostInr);
+  it('treats negative or missing build hours as zero cost', () => {
+    expect(estimateRoi({ ...roi, buildHours: -5 }).buildCostInr).toBe(0);
   });
 });
 
 describe('absurd inputs stay finite', () => {
   it('estimateRoi clamps huge values to finite numbers', () => {
-    const r = estimateRoi({ process: 'support', tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 1e200, automationPct: 70 });
-    for (const v of [r.hoursSavedMonthly, r.savedMonthlyInr, r.savedYearlyInr]) expect(Number.isFinite(v)).toBe(true);
-    const z = estimateRoi({ process: 'support', tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 0, automationPct: 70 });
+    const r = estimateRoi({ tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 1e200, automationPct: 70, buildHours: 1e200 });
+    for (const v of [r.hoursSavedMonthly, r.savedMonthlyInr, r.savedYearlyInr, r.buildCostInr]) expect(Number.isFinite(v)).toBe(true);
+    const z = estimateRoi({ tasksPerMonth: 1e200, minutesPerTask: 1e200, hourlyCostInr: 0, automationPct: 70, buildHours: 50 });
     expect(z.savedMonthlyInr).toBe(0);
     expect(z.paybackMonths).toBeNull();
   });

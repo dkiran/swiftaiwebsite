@@ -1,0 +1,62 @@
+---
+import Base from '../../layouts/Base.astro';
+import ServiceHero from '../../components/ServiceHero.astro';
+import FAQ from '../../components/FAQ.astro';
+import CTA from '../../components/CTA.astro';
+import { serviceSchema, breadcrumbSchema } from '../../lib/schema';
+const faqs = [
+  { q: 'What is a fractional CAIO?', a: 'A fractional CAIO (Chief AI Officer) is a senior AI leader who works with your company part-time. They set AI strategy, choose where AI will genuinely pay off, put governance and risk controls in place, and guide the people who build and run AI systems, without the cost of a full-time executive.' },
+  { q: 'What is the difference between a CTO and a CAIO?', a: 'A CTO owns the company\'s overall technology: architecture, engineering team and delivery. A CAIO focuses on AI: which use cases to pursue, data readiness, model and vendor choices, safe and responsible use, and measuring results. In smaller companies one person may cover both; larger ones keep them separate.' },
+  { q: 'When does a company need a fractional CAIO?', a: 'When you want to use AI but do not know where to start, have scattered AI pilots with unclear value, face questions about data privacy or compliance, or need to choose between buying AI tools and building your own.' },
+  { q: 'Is a fractional CAIO the same as hiring an AI automation agency?', a: 'No. A CAIO is your own senior leader who decides what to do and holds vendors and teams accountable. An agency builds specific automations. Many companies use both: a CAIO for direction and a builder for delivery.' },
+  { q: 'Where should I start?', a: 'Start with a free AI Audit. It maps where AI can save time and money in your business and shows whether you need a CAIO, an automation project, or both.' },
+];
+const schema = [serviceSchema('Fractional Chief AI Officer (CAIO) Services', 'Part-time AI leadership: AI strategy, governance and delivery oversight for companies adopting AI.', '/fractional-caio/'),
+  breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fractional CAIO', path: '/fractional-caio/' }])];
+const does = [
+  ['AI strategy and roadmap', 'Find the use cases that matter, rank them by value and effort, and build a realistic plan.'],
+  ['Data readiness', 'Check whether your data is accurate, accessible and allowed to be used for AI.'],
+  ['Build, buy or partner', 'Choose between ready-made AI tools, custom builds and partners, and avoid lock-in.'],
+  ['Governance and risk', 'Set rules for privacy, security, accuracy and human review, and check applicable regulations.'],
+  ['Delivery oversight', 'Guide the people building AI systems and make sure pilots reach production.'],
+  ['Measuring results', 'Define success measures up front and track whether AI delivers them.'],
+];
+const kinds = [
+  ['AI strategy CAIO', 'For companies deciding where to apply AI. Focuses on opportunity mapping, roadmap and business cases.'],
+  ['AI governance and risk CAIO', 'For companies in sensitive or regulated settings. Focuses on policy, privacy, security and responsible use.'],
+  ['AI delivery CAIO', 'For companies already building. Focuses on architecture, vendors, quality and getting AI into production.'],
+];
+---
+<Base title="Fractional CAIO: Part-Time Chief AI Officer Explained"
+  description="A fractional CAIO is a part-time Chief AI Officer who sets AI strategy, governance and delivery. Learn what they do, the types, and CAIO vs CTO."
+  path="/fractional-caio/" schema={schema}>
+  <ServiceHero eyebrow="Fractional CAIO" title="A Chief AI Officer, <span class='gradient'>without the full-time cost.</span>"
+    lead="Part-time AI leadership: strategy, governance and delivery oversight, so AI projects pay off instead of piling up."
+    ctaLabel="Browse CAIOs" ctaHref="/cto-network/?role=CAIO" secondaryLabel="Start with a free AI Audit" secondaryHref="/book-ai-audit/" />
+
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">What a CAIO does</span><h2>Six jobs, part-time.</h2></div>
+    <div class="grid g3">{does.map(([t, d], n) => <div class={`card reveal d${n % 3}`}><h3>{t}</h3><p>{d}</p></div>)}</div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">Types of fractional CAIO</span><h2>Pick the focus you need.</h2></div>
+    <div class="grid g3">{kinds.map(([t, d], n) => <div class={`card reveal d${n % 3}`}><h3>{t}</h3><p>{d}</p></div>)}</div>
+  </div></section>
+
+  <section class="section alt"><div class="container">
+    <div class="head reveal"><span class="eyebrow">CAIO or CTO?</span><h2>How they differ.</h2></div>
+    <div class="prose" style="max-width:860px"><table>
+      <thead><tr><th></th><th>Fractional CTO</th><th>Fractional CAIO</th></tr></thead>
+      <tbody>
+        <tr><td><b>Owns</b></td><td>Overall technology, architecture, engineering team</td><td>AI strategy, use cases, data readiness, responsible use</td></tr>
+        <tr><td><b>Typical question</b></td><td>How should we build and scale this product?</td><td>Where will AI actually pay off for us?</td></tr>
+        <tr><td><b>Best for</b></td><td>Product and engineering leadership</td><td>Companies adopting or scaling AI</td></tr>
+        <tr><td><b>Together</b></td><td colspan="2">Smaller companies often use one leader for both. Larger ones keep them separate.</td></tr>
+      </tbody></table>
+      <p>See the <a href="/fractional-cto/types/">types of fractional CTO</a>, or learn how <a href="/ai-automations/">AI automation</a> projects are built once the strategy is clear.</p></div>
+  </div></section>
+
+  <section class="section"><div class="container"><div class="head center"><span class="eyebrow">Questions</span><h2>Fractional CAIO, answered.</h2></div><FAQ items={faqs} /></div></section>
+  <CTA title="Not sure if you need a CAIO?" sub="A free AI Audit shows where AI can help and whether you need a leader, a builder, or both." />
+</Base>

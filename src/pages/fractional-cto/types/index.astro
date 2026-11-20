@@ -1,0 +1,63 @@
+---
+import Base from '../../../layouts/Base.astro';
+import FAQ from '../../../components/FAQ.astro';
+import CTA from '../../../components/CTA.astro';
+import { breadcrumbSchema } from '../../../lib/schema';
+const types = [
+  ['Advisory / strategic CTO', 'Sets technology direction without running the team day to day: roadmap, architecture reviews, vendor and developer evaluation, and a sounding board for founders.', 'Non-technical founders and teams that have developers but need judgement.', 'Little hands-on delivery, so you need someone to execute.'],
+  ['Hands-on (player-coach) CTO', 'Leads the team and gets involved in the work: reviewing code, unblocking engineers, shipping releases, and sometimes writing critical code.', 'Small teams and products that need progress, not only advice.', 'Needs more hours a week than an advisor.'],
+  ['Startup (0 to 1) CTO', 'Takes an idea to a working product: chooses the stack, scopes the MVP, hires the first engineers and sets up simple processes.', 'Founders with a new product and no technical co-founder.', 'Keep the first version small; the right CTO will push you to.'],
+  ['Scale-up CTO', 'Grows an existing product and team: platform scalability, engineering management, hiring, process and reliability.', 'Companies with revenue and a growing engineering team.', 'May be better as a longer, deeper engagement.'],
+  ['Domain-specialist CTO', 'Brings deep experience in an industry, such as transportation and GPS telematics, fintech or healthtech, including the typical architecture and regulatory pitfalls.', 'Businesses where industry knowledge changes technical decisions.', 'Check the specific experience, not just the label.'],
+  ['Interim / transition CTO', 'Covers a gap when a CTO leaves or while you search for a permanent leader, then hands over cleanly.', 'Companies between leaders or under time pressure.', 'Agree a clear handover plan and end date.'],
+  ['Technical due-diligence CTO', 'Assesses a product, codebase and team for fundraising, acquisition or investment and reports risks plainly.', 'Founders raising money and investors or buyers reviewing a company.', 'A point-in-time review, not ongoing leadership.'],
+];
+const faqs = [
+  { q: 'What are the different types of fractional CTO?', a: 'The common types are advisory or strategic, hands-on (player-coach), startup (0 to 1), scale-up, domain-specialist, interim or transition, and technical due diligence. Many people combine two or three, so choose by what you need done in the next six months.' },
+  { q: 'Which type of fractional CTO should a non-technical founder hire?', a: 'Usually a startup (0 to 1) CTO if you are building a first product, or an advisory CTO if you already have developers or an agency and need someone to judge their work. A hands-on CTO is a good fit when progress matters as much as advice.' },
+  { q: 'How many hours a week does a fractional CTO work?', a: 'It varies by type: advisory engagements can be a few hours a week, hands-on roles often take one to three days a week, and short projects such as due diligence are scoped by task. Hourly pricing lets you match hours to need.' },
+  { q: 'Can I switch from a fractional CTO to a full-time CTO?', a: 'Yes. Many companies start fractionally and move to a full-time CTO as funding and workload grow. A good fractional CTO helps define the role and hire their successor.' },
+];
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'Fractional CTO', path: '/fractional-cto/' }, { name: 'Types', path: '/fractional-cto/types/' }])];
+---
+<Base title="Types of Fractional CTO: Which One Do You Need?"
+  description="Seven kinds of fractional CTO explained: advisory, hands-on, startup, scale-up, domain specialist, interim and due diligence, and how to choose."
+  path="/fractional-cto/types/" schema={schema}>
+  <section class="hero" style="padding-bottom:40px"><div class="container">
+    <span class="pill">Fractional CTO</span><h1>Not every fractional CTO <span class="gradient">is the same.</span></h1>
+    <p class="lead">There are seven common kinds. Choosing the right one matters more than choosing the cheapest.</p>
+    <div class="btns" style="justify-content:center"><a class="btn btn-primary" href="/cto-network/">Browse the CTO network</a><a class="btn btn-ghost" href="/hire-a-cto/">Tell us what you need</a></div></div></section>
+
+  <section class="section alt" style="padding-top:48px"><div class="container">
+    <div class="head reveal"><span class="eyebrow">The seven types</span><h2>What each one does.</h2>
+      <p class="lead">A fractional CTO is a senior technology leader who works part-time for your company. What they focus on depends on your stage and your problem.</p></div>
+    <div class="grid g2">
+      {types.map(([t, d, best, watch], n) => (
+        <div class={`card reveal d${n % 2}`}><h3>{t}</h3><p>{d}</p>
+          <p style="margin-top:8px"><b style="color:var(--ink)">Best for:</b> {best}</p><p><b style="color:var(--ink)">Watch for:</b> {watch}</p></div>
+      ))}
+    </div>
+  </div></section>
+
+  <section class="section"><div class="container">
+    <div class="head reveal"><span class="eyebrow">How to choose</span><h2>Match the type to your situation.</h2></div>
+    <div class="prose" style="max-width:860px"><table>
+      <thead><tr><th>Your situation</th><th>Start with</th></tr></thead>
+      <tbody>
+        <tr><td>Non-technical founder, building the first product</td><td>Startup (0 to 1) CTO</td></tr>
+        <tr><td>Developers or an agency in place, no technical direction</td><td>Advisory CTO</td></tr>
+        <tr><td>Small team that needs delivery help, not just advice</td><td>Hands-on CTO</td></tr>
+        <tr><td>Growing company, engineering is getting harder to manage</td><td>Scale-up CTO</td></tr>
+        <tr><td>Industry-specific product, such as fleet or telematics</td><td>Domain-specialist CTO</td></tr>
+        <tr><td>CTO left, or you are hiring a permanent one</td><td>Interim CTO</td></tr>
+        <tr><td>Raising money, or being assessed by investors</td><td>Technical due-diligence CTO</td></tr>
+      </tbody></table>
+      <h2>Questions to ask any fractional CTO</h2>
+      <ul><li>Which companies and products have you led, and what was your role?</li><li>What would you do in the first 30 days?</li><li>How many hours a week can you give, and how will we track outcomes?</li><li>How do you handle handover if we later hire full-time?</li><li>Which parts of our domain have you worked in before?</li></ul>
+      <p>New to the idea? Read <a href="/blog/what-is-a-fractional-cto/">what a fractional CTO is</a> or compare with a <a href="/blog/fractional-cto-vs-full-time-cto/">full-time CTO</a>. If AI is the main question, see <a href="/fractional-caio/">fractional CAIO</a>.</p>
+    </div>
+  </div></section>
+
+  <section class="section alt"><div class="container"><div class="head center"><span class="eyebrow">Questions</span><h2>Fractional CTO types, answered.</h2></div><FAQ items={faqs} /></div></section>
+  <CTA title="Ready to meet the right CTO?" sub="Browse reviewed profiles by domain and experience, then request an introduction." href="/cto-network/" label="Browse the CTO network" secondaryHref="/fractional-cto/cost-calculator/" secondaryLabel="Estimate the cost" />
+</Base>

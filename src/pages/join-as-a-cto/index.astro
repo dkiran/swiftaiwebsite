@@ -7,16 +7,23 @@ const fields: Field[] = [
   { name: 'email', label: 'Email', type: 'email', required: true },
   { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
   { name: 'linkedin', label: 'LinkedIn profile', type: 'url', required: true, placeholder: 'https://linkedin.com/in/…' },
-  { name: 'experience', label: 'Years of experience', type: 'select', required: true, options: ['8–12', '12–15', '15–20', '20+'] },
-  { name: 'availability', label: 'Availability', type: 'select', required: true, options: ['Fractional', 'Full-time', 'Both'] },
-  { name: 'domains', label: 'Domains and technologies', type: 'text', required: true, placeholder: 'e.g. fintech, healthtech, AI/ML, cloud' },
-  { name: 'bio', label: 'Tell us about your experience', type: 'textarea', required: true, placeholder: 'Companies, teams you have led, products you have shipped…' },
+  { name: 'role', label: 'Role', type: 'select', required: true, options: ['Fractional CTO', 'Fractional CAIO', 'Both CTO and CAIO'] },
+  { name: 'headline', label: 'Profile headline', type: 'text', required: true, placeholder: 'e.g. Fractional CTO for fintech and payments' },
+  { name: 'experience', label: 'Years of experience', type: 'select', required: true, options: ['5–8', '8–12', '12–15', '15–20', '20+'] },
+  { name: 'domains', label: 'Domains', type: 'text', required: true, placeholder: 'e.g. fintech, healthtech, logistics, AI/ML' },
+  { name: 'skills', label: 'Key skills', type: 'text', placeholder: 'e.g. Node.js, AWS, mobile apps, data platforms' },
+  { name: 'engagement', label: 'Open to', type: 'select', required: true, options: ['Fractional (part-time)', 'Full-time', 'Advisory', 'Interim', 'Several of these'] },
+  { name: 'availability', label: 'Availability', type: 'select', required: true, options: ['Available now', 'Limited availability', 'From a future date'] },
+  { name: 'location', label: 'Location (city, country)', type: 'text' },
+  { name: 'rate', label: 'Your hourly rate (private, never published)', type: 'text', required: true, placeholder: 'e.g. INR 3,000 or USD 60 per hour' },
+  { name: 'bio', label: 'Tell us about your experience', type: 'textarea', required: true, placeholder: 'Companies, teams you have led, products you have shipped, results you can stand behind.' },
+  { name: 'consent', label: 'May we publish your name, headline and experience on a profile after review?', type: 'select', required: true, options: ['Yes', 'No, keep it private for now'] },
 ];
 ---
 <FormPage title="Join the Swift AI CTO Network"
   description="Experienced CTOs: register with Swift AI to offer fractional or full-time leadership to startups, SMEs and companies looking for technology leaders."
-  path="/join-as-a-cto/" eyebrow="For CTOs" heading="Join a network of <span class='gradient'>technology leaders.</span>"
-  lead="Register your experience and work with companies that need a CTO, fractionally or full-time."
-  points={['Choose fractional, full-time or both', 'Matched with companies that fit your domain', 'Applications are reviewed by our team']}>
+  path="/join-as-a-cto/" eyebrow="For CTOs" heading="Create a profile in a network of <span class='gradient'>technology leaders.</span>"
+  lead="Register your experience, domains and rate. Companies browse reviewed profiles and ask Swift AI for an introduction."
+  points={['Apply as a CTO, a CAIO or both', 'Your hourly rate stays private: it is shared only when a company requests an introduction', 'Every profile is reviewed before it goes live', 'No photo, email or phone is published']}>
   <LeadForm formName="CTO Registration" fields={fields} submitLabel="Apply to join" success="Thank you! Our team will review your application and get in touch." />
 </FormPage>

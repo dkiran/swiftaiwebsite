@@ -1,0 +1,19 @@
+---
+import { initials } from '../lib/network';
+interface Props { id: string; name: string; headline: string; roles: string[]; domains: string[]; engagement: string[]; yearsExperience: number; availability?: string; }
+const { id, name, headline, roles, domains, engagement, yearsExperience, availability } = Astro.props;
+const avail: Record<string, string> = { available: 'Available now', limited: 'Limited availability', booked: 'Currently booked' };
+const roleLabel = (r: string) => (r === 'CTO' ? 'Fractional CTO' : 'Fractional CAIO');
+---
+<a class="pcard card hover" href={`/cto-network/${id}/`} data-id={id}>
+  <div class="pc-top">
+    <span class="avatar" aria-hidden="true">{initials(name)}</span>
+    <div><h3>{name}</h3><p class="pc-head">{headline}</p></div>
+  </div>
+  <div class="tags">
+    {roles.map((r) => <span class="tag">{roleLabel(r)}</span>)}
+    {domains.slice(0, 3).map((d) => <span class="tag tag-gray">{d}</span>)}
+  </div>
+  <p class="pc-meta">{yearsExperience}+ years · {engagement.join(', ')}{availability && <span class={`avail avail-${availability}`}> · {avail[availability]}</span>}</p>
+  <span class="more">View profile ›</span>
+</a>

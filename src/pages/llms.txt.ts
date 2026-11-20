@@ -13,6 +13,8 @@ export async function GET() {
 - [Fractional CTO](${u('/fractional-cto/')}): part-time or full-time CTO leadership for startups and companies.
 - [Consultation](${u('/consultation/')}): software development at high speed using AI-assisted engineering.
 - [Transportation and mobility](${u('/transportation/')}): our specialty. Fractional CTO, GPS telematics consulting, ride-hailing-style mobile apps and AI automation for fleets, logistics and mobility companies. Free [fleet health check](${u('/transportation/health-check/')}).
+- [CTO and CAIO Network](${u('/cto-network/')}): reviewed profiles of fractional and full-time CTOs and Chief AI Officers; request an introduction. Rates are shared on request.
+- [Types of fractional CTO](${u('/fractional-cto/types/')}) and [Fractional CAIO](${u('/fractional-caio/')}): guides.
 - [Pricing](${u('/pricing/')}): fractional CTO at INR 1,500 per hour; early-stage startups from INR 850 per hour. AI automation builds at INR 2,500 per hour. Full-time CTO packages from INR 36 lakh per year (remote) and INR 50 lakh (on-site). Rates are in Indian rupees; international clients can be invoiced in USD or EUR on request. First AI Audit is free.
 - [Products](${u('/products/')}): SingleQR (${site.products.singleqr}) and SingleStaff (${site.products.singlestaff}).
 

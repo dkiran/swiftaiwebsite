@@ -1,0 +1,63 @@
+---
+import { getCollection, render } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import LeadForm from '../../components/LeadForm.astro';
+import { initials } from '../../lib/network';
+import { breadcrumbSchema } from '../../lib/schema';
+import { site } from '../../data/site';
+import type { Field } from '../../scripts/form';
+
+export async function getStaticPaths() {
+  const all = (await getCollection('profiles')).filter((p) => p.data.status === 'published');
+  return all.map((p) => ({ params: { slug: p.id }, props: { p } }));
+}
+const { p } = Astro.props;
+const { Content } = await render(p);
+const d = p.data;
+const path = `/cto-network/${p.id}/`;
+const roleLabel = (r: string) => (r === 'CTO' ? 'Fractional CTO' : 'Fractional CAIO');
+const roles = d.roles.map(roleLabel);
+const avail: Record<string, string> = { available: 'Available now', limited: 'Limited availability', booked: 'Currently booked' };
+const description = `${d.name}, ${d.headline}. ${d.yearsExperience}+ years of experience. Request an introduction through Swift AI.`.slice(0, 165);
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'CTO Network', path: '/cto-network/' }, { name: d.name, path }]),
+  { '@context': 'https://schema.org', '@type': 'ProfilePage', url: `${site.url}${path}`, mainEntity: { '@type': 'Person', name: d.name, jobTitle: roles.join(' and '), description: d.headline,
+    knowsAbout: [...d.domains, ...d.skills], ...(d.location ? { workLocation: d.location } : {}), ...(d.linkedin ? { sameAs: [d.linkedin] } : {}) } }];
+const fields: Field[] = [
+  { name: 'name', label: 'Your name', type: 'text', required: true },
+  { name: 'company', label: 'Company', type: 'text', required: true },
+  { name: 'email', label: 'Work email', type: 'email', required: true },
+  { name: 'phone', label: 'Phone / WhatsApp', type: 'tel', required: true },
+  { name: 'engagement', label: 'What do you need?', type: 'select', required: true, options: ['Fractional (part-time)', 'Full-time', 'Not sure yet'] },
+  { name: 'message', label: 'Tell us about your needs', type: 'textarea', required: true, placeholder: 'Your product, stage, and what you want this person to own.' },
+];
+---
+<Base title={`${d.name}: ${roles.join(' and ')}`} description={description} path={path} schema={schema}>
+  <section class="section" style="padding-top:clamp(40px,7vw,90px)"><div class="container">
+    <nav class="crumbs" aria-label="Breadcrumb"><a href="/">Home</a> › <a href="/cto-network/">CTO Network</a></nav>
+    <div class="calc" style="align-items:start">
+      <div>
+        <div class="pf-head"><span class="avatar avatar-lg" aria-hidden="true">{initials(d.name)}</span>
+          <div><h1 style="font-size:clamp(2rem,4.6vw,3.25rem)">{d.name}</h1><p class="lead" style="margin:8px 0 0">{d.headline}</p></div></div>
+        <div class="tags" style="margin:20px 0">
+          {roles.map((r) => <span class="tag">{r}</span>)}
+          <span class="tag tag-gray">{d.yearsExperience}+ years</span>
+          {d.availability && <span class={`tag avail-tag avail-${d.availability}`}>{avail[d.availability]}</span>}
+          <span class="tag tag-gray">Reviewed by Swift AI</span>
+        </div>
+        <div class="prose" style="margin:0;max-width:none">
+          <h2>About</h2><Content />
+          {d.highlights.length > 0 && (<><h2>Experience highlights</h2><ul>{d.highlights.map((h) => <li>{h}</li>)}</ul></>)}
+          <h2>Domains and skills</h2>
+          <div class="tags">{d.domains.map((x) => <span class="tag">{x}</span>)}{d.skills.map((x) => <span class="tag tag-gray">{x}</span>)}</div>
+          <h2>Engagement</h2><p>Open to: {d.engagement.join(', ')}.{d.location && ` Based in ${d.location}.`}</p>
+          {d.linkedin && <p><a href={d.linkedin} rel="noopener me" target="_blank">LinkedIn profile ›</a></p>}
+        </div>
+      </div>
+      <aside class="result" style="background:transparent;color:var(--ink);box-shadow:none;padding:0">
+        <h2 style="font-size:1.5rem">Request an introduction</h2>
+        <p style="color:var(--muted);margin:10px 0 18px">Swift AI introduces you and shares the hourly rate. Contact details are not published; every introduction goes through us.</p>
+        <LeadForm formName={`Introduction request: ${d.name}`} fields={fields} submitLabel="Request introduction" success="Thank you! We will review your request and reply within two business days." />
+      </aside>
+    </div>
+  </div></section>
+</Base>

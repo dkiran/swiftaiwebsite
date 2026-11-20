@@ -1,0 +1,77 @@
+---
+import { getCollection } from 'astro:content';
+import Base from '../../layouts/Base.astro';
+import ProfileCard from '../../components/ProfileCard.astro';
+import CTA from '../../components/CTA.astro';
+import { sortProfiles, facets, type ProfileLite } from '../../lib/network';
+import { breadcrumbSchema } from '../../lib/schema';
+import { site } from '../../data/site';
+
+const entries = (await getCollection('profiles')).filter((p) => p.data.status === 'published');
+const items = sortProfiles(entries.map((p) => ({ id: p.id, ...p.data })) as (ProfileLite & Record<string, any>)[]);
+const lite: ProfileLite[] = items.map((p) => ({ id: p.id, name: p.name, headline: p.headline, roles: p.roles, domains: p.domains, skills: p.skills, engagement: p.engagement, yearsExperience: p.yearsExperience, availability: p.availability }));
+const f = facets(lite);
+const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'CTO Network', path: '/cto-network/' }]),
+  { '@context': 'https://schema.org', '@type': 'CollectionPage', name: 'Swift AI CTO and CAIO Network', url: `${site.url}/cto-network/`,
+    mainEntity: { '@type': 'ItemList', itemListElement: items.map((p, i) => ({ '@type': 'ListItem', position: i + 1, url: `${site.url}/cto-network/${p.id}/`, name: p.name })) } }];
+---
+<Base title="CTO and CAIO Network: Browse Fractional Tech Leaders"
+  description="Browse reviewed fractional and full-time CTOs and Chief AI Officers by domain, experience and availability, and request an introduction through Swift AI."
+  path="/cto-network/" schema={schema}>
+  <section class="hero" style="padding-bottom:24px"><div class="container">
+    <span class="pill">CTO Network</span><h1>Find a fractional <span class="gradient">CTO or CAIO.</span></h1>
+    <p class="lead">Every profile is reviewed by Swift AI. Browse by domain and experience, then request an introduction. Hourly rates are shared when you do.</p>
+    <div class="btns" style="justify-content:center"><a class="btn btn-primary" href="/hire-a-cto/">Tell us what you need</a><a class="btn btn-ghost" href="/join-as-a-cto/">Join as a CTO or CAIO</a></div></div></section>
+
+  <section class="section" style="padding-top:24px"><div class="container">
+    <form class="nf js-only" id="nf" onsubmit="return false" aria-label="Filter profiles">
+      <div class="field nf-q"><label for="nf-q">Search</label><input id="nf-q" type="search" placeholder="Name, skill or domain" autocomplete="off" /></div>
+      <div class="field"><label for="nf-role">Role</label><select id="nf-role"><option value="">Any</option><option value="CTO">Fractional CTO</option><option value="CAIO">Fractional CAIO</option></select></div>
+      <div class="field"><label for="nf-domain">Domain</label><select id="nf-domain"><option value="">Any</option>{f.domains.map((d) => <option value={d}>{d}</option>)}</select></div>
+      <div class="field"><label for="nf-eng">Engagement</label><select id="nf-eng"><option value="">Any</option>{f.engagement.map((d) => <option value={d}>{d}</option>)}</select></div>
+      <div class="field"><label for="nf-av">Availability</label><select id="nf-av"><option value="">Any</option><option value="available">Available now</option><option value="limited">Limited availability</option></select></div>
+      <div class="field"><label for="nf-yrs">Experience</label><select id="nf-yrs"><option value="0">Any</option><option value="5">5+ years</option><option value="10">10+ years</option><option value="15">15+ years</option><option value="20">20+ years</option></select></div>
+      <button class="btn btn-ghost btn-sm" type="button" id="nf-reset">Reset</button>
+    </form>
+    <p class="meta js-only" id="nf-count" aria-live="polite" style="margin:18px 0"></p>
+    <div class="grid g3" id="nf-grid">
+      {items.map((p) => <ProfileCard id={p.id} name={p.name} headline={p.headline} roles={p.roles} domains={p.domains} engagement={p.engagement} yearsExperience={p.yearsExperience} availability={p.availability} />)}
+    </div>
+    <div id="nf-empty" class="card" style="display:none;margin-top:20px;text-align:center"><h3>No profiles match yet</h3>
+      <p>Our network is growing. Tell us what you need and we will look for the right person.</p>
+      <div class="btns" style="justify-content:center"><a class="btn btn-primary" href="/hire-a-cto/">Tell us what you need</a></div></div>
+    <p class="meta" style="margin-top:28px">The network is new and grows as profiles pass review. Hourly rates and contact details are not published: Swift AI shares rates when you request an introduction.</p>
+  </div></section>
+
+  <section class="section alt"><div class="container"><div class="grid g2">
+    <a class="card hover" href="/fractional-cto/types/"><h3>Which kind of fractional CTO do you need?</h3><p>Advisory, hands-on, startup, scale-up, domain specialist, interim or due diligence.</p><span class="more">Compare the types ›</span></a>
+    <a class="card hover" href="/fractional-caio/"><h3>What is a fractional CAIO?</h3><p>A part-time Chief AI Officer sets your AI strategy, governance and delivery.</p><span class="more">Learn about CAIOs ›</span></a>
+  </div></div></section>
+  <CTA title="Can't find the right fit?" sub="Describe what you need. We introduce vetted leaders from our network and beyond." href="/hire-a-cto/" label="Request a CTO or CAIO" />
+  <script type="application/json" id="nf-data" set:html={JSON.stringify(lite)} />
+</Base>
+<script>
+  import { filterProfiles, sortProfiles, type ProfileLite, type Role } from '../../lib/network';
+  const data: ProfileLite[] = JSON.parse(document.getElementById('nf-data')!.textContent!);
+  const grid = document.getElementById('nf-grid')!;
+  const cards = new Map<string, HTMLElement>([...grid.querySelectorAll<HTMLElement>('.pcard')].map((c) => [c.dataset.id!, c]));
+  const $ = (id: string) => document.getElementById(id) as HTMLInputElement;
+  const keys = { q: 'nf-q', role: 'nf-role', domain: 'nf-domain', engagement: 'nf-eng', availability: 'nf-av', minYears: 'nf-yrs' } as const;
+  const params = new URLSearchParams(location.search);
+  for (const [k, id] of Object.entries(keys)) { const v = params.get(k); if (v) $(id).value = v; }
+  const run = () => {
+    const f = { q: $('nf-q').value, role: $('nf-role').value as Role | '', domain: $('nf-domain').value, engagement: $('nf-eng').value, availability: $('nf-av').value, minYears: Number($('nf-yrs').value) };
+    const shown = sortProfiles(filterProfiles(data, f));
+    const showIds = new Set(shown.map((p) => p.id));
+    cards.forEach((c, id) => { c.style.display = showIds.has(id) ? '' : 'none'; });
+    shown.forEach((p) => grid.append(cards.get(p.id)!));
+    document.getElementById('nf-empty')!.style.display = shown.length ? 'none' : '';
+    document.getElementById('nf-count')!.textContent = `Showing ${shown.length} of ${data.length} profile${data.length === 1 ? '' : 's'}`;
+    const qs = new URLSearchParams();
+    for (const [k, id] of Object.entries(keys)) { const v = $(id).value; if (v && v !== '0') qs.set(k, v); }
+    history.replaceState(null, '', qs.toString() ? `?${qs}` : location.pathname);
+  };
+  document.querySelectorAll('#nf input, #nf select').forEach((e) => e.addEventListener('input', run));
+  document.getElementById('nf-reset')!.addEventListener('click', () => { Object.values(keys).forEach((id) => { $(id).value = id === 'nf-yrs' ? '0' : ''; }); run(); });
+  run();
+</script>

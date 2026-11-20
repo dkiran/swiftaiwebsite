@@ -35,6 +35,13 @@ Forms post JSON to `PUBLIC_FORM_ENDPOINT`. **Formspree:** paste your form URL, n
 ## Add a blog post
 Create `src/content/blog/<slug>.md` with frontmatter `title` (max 70 chars), `description` (70–160), `tldr`, `date`, `category` (`AI Automation` or `Fractional CTO`), `readingMinutes`, and optional `faq`. The build fails on missing fields. Sitemap, RSS, `llms.txt` and schema update automatically.
 
+## Add a CTO / CAIO profile (curated network)
+1. A CTO or CAIO applies at `/join-as-a-cto/`. The submission (including their **private** hourly rate and publishing consent) arrives in your form inbox. Keep the rate in your own records; it is never put on the site.
+2. After you review them and they consent, create `src/content/profiles/<first-last>.md` (copy `d-kiran-kumar.md`). Fields: `name`, `headline`, `roles` (CTO and/or CAIO), `yearsExperience`, `domains`, `skills`, `engagement` (fractional, full-time, advisory, interim), optional `availability` (available, limited, booked), `location`, `linkedin`, `highlights`, `status` (published or draft), and a Markdown bio.
+3. **There is no `rate` field and the build fails if you add one.** Companies see rates only when they request an introduction and you share it.
+4. Commit and deploy. The profile appears on `/cto-network/` with its own page, search and filters pick it up automatically. Use `status: draft` to hide a profile.
+5. When a company requests an introduction (form `Introduction request: <name>`), you connect them and share the rate.
+
 ## SEO / AEO / GEO included
 Per-page title, description, canonical, Open Graph; JSON-LD (Organization, WebSite, Service, FAQPage, Article, BreadcrumbList, WebApplication, SoftwareApplication); answer-first copy and FAQs; `sitemap-index.xml`, `rss.xml`, `llms.txt`, and `robots.txt` that welcomes AI crawlers. After launch, submit the sitemap in Google Search Console and Bing Webmaster Tools.
 

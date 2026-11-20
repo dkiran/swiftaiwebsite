@@ -68,6 +68,22 @@ if (process.env.CHECK_STAGE >= 6 || !process.env.CHECK_STAGE) {
   expect('pricing', (h) => h.includes('850') && h.includes('1,500'), 'pricing page must show ₹850 and ₹1,500 rates');
   expect('pricing', hasType('Offer'), 'missing Offer JSON-LD');
 }
+if (process.env.CHECK_STAGE >= 7 || !process.env.CHECK_STAGE) {
+  expect('cto-network', hasType('CollectionPage'), 'missing CollectionPage JSON-LD');
+  expect('fractional-cto/types', hasType('FAQPage'), 'missing FAQPage JSON-LD');
+  expect('fractional-caio', hasType('Service'), 'missing Service JSON-LD');
+  expect('fractional-caio', hasType('FAQPage'), 'missing FAQPage JSON-LD');
+  const netDir = join(DIST, 'cto-network');
+  const profiles = existsSync(netDir) ? readdirSync(netDir).filter((d) => statSync(join(netDir, d)).isDirectory()) : [];
+  if (profiles.length < 1) fail('cto-network: expected at least one profile page');
+  const RATE = /(₹|INR|USD|EUR|Rs\.?|\$)\s?[\d,]+(\.\d+)?\s*(\/|per)\s*(hour|hr)/i;
+  for (const slug of profiles) {
+    const h = html('cto-network/' + slug) || '';
+    if (!hasType('Person')(h)) fail(`cto-network/${slug}: missing Person JSON-LD`);
+    if (RATE.test(h.replace(/<script[\s\S]*?<\/script>/g, ''))) fail(`cto-network/${slug}: an hourly rate is visible (rates must never be published)`);
+    if (/href="(mailto|tel):/i.test(h.replace(/<footer[\s\S]*?<\/footer>/, ''))) fail(`cto-network/${slug}: contact details (mailto/tel) must not appear on profile pages`);
+  }
+}
 if (process.env.CHECK_STAGE >= 5 || !process.env.CHECK_STAGE) {
   const posts = existsSync(join(DIST, 'blog'))
     ? readdirSync(join(DIST, 'blog')).filter((d) => statSync(join(DIST, 'blog', d)).isDirectory())

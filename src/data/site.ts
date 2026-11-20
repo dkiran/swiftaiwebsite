@@ -25,6 +25,7 @@ export const site = {
 export const founder = {
   name: 'D Kiran Kumar',
   title: 'Founder',
+  linkedin: 'https://www.linkedin.com/in/dkirankumar',
   roles: [
     { org: 'SingleQR', role: 'Founder', url: 'https://singleqr.in' },
     { org: 'BharatSelfDrive.com', role: 'CTO', url: 'https://www.bharatselfdrive.com' },

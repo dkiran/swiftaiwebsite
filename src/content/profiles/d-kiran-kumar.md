@@ -6,6 +6,7 @@ yearsExperience: 20
 domains: ["Transportation & mobility", "GPS telematics", "Mobile apps"]
 skills: ["Fractional CTO leadership", "Mobile app development", "GPS telematics", "Ride-hailing-style products"]
 engagement: ["fractional"]
+availability: "limited"
 location: "Karnataka, India"
 linkedin: "https://www.linkedin.com/in/dkirankumar"
 highlights:

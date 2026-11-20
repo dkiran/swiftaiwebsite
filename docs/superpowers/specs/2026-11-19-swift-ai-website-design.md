@@ -91,3 +91,15 @@ Exact copy polish, visual details and animation, icons and illustrations (SVG, n
 - **Added:** `/transportation/`, `/transportation/health-check/` (client-side 8-question quiz), `/pricing/`, a hero carousel slide and home band, founder facts block, three transportation blog posts, chat knowledge and `llms.txt` updates.
 - **Founder facts policy:** only user-confirmed facts appear on the site. Confirmed 2026-11-20: name D Kiran Kumar, title Founder, product BharatSelfDrive.com (a self-drive platform). No photo (user choice).
 - **Still placeholders:** full-time CTO yearly benchmark and AI automation build costs in `pricing.ts`; contact details; CIN and GSTIN; domain.
+
+## Addendum (2026-11-20): CTO / CAIO network (Option A, curated)
+**Approved by user:** curated profiles (Option A); initials avatars, no photos; rates shown only after a company requests an introduction.
+- **Intent:** let experienced fractional CTOs and CAIOs register, and let companies browse vetted profiles and request an introduction through Swift AI.
+- **Information pages:** `/fractional-cto/types/` (seven kinds of fractional CTO and how to choose) and `/fractional-caio/` (what a Chief AI Officer does, kinds, CAIO vs CTO).
+- **Registration:** the existing `/join-as-a-cto/` form gains role (CTO, CAIO or both), hourly rate (private), headline and engagement type. Submissions go to Swift AI's inbox; Swift AI reviews each one.
+- **Profiles:** Markdown files in `src/content/profiles/` (Astro content collection, strict schema). Fields: name, headline, roles, yearsExperience, domains, skills, engagement, availability (optional), location (optional), linkedin (optional), highlights, status (published or draft), bio. **No rate field exists: the schema rejects one**, so a rate can never be published by accident.
+- **Browse (`/cto-network/`):** client-side search and filters (role, domain, engagement, availability, minimum years), sorted by availability then experience. One page per profile (`/cto-network/<slug>/`) with Person structured data. No email or phone is shown anywhere.
+- **Contact flow:** each profile has a "Request an introduction" form that goes to Swift AI (profile name included). Rates are shared by Swift AI during the introduction.
+- **No fake profiles:** the first profile is the founder's, from confirmed facts only. Others are added when their owners send details and consent.
+- **Non-goals:** logins, self-serve editing, messaging, payments, photos (all later: Option B or C).
+- **Later path:** the profile data shape is reusable if storage moves to a database (Option B).

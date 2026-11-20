@@ -44,6 +44,14 @@ It pulls the latest code, builds, publishes the website and the API, restarts th
      IdentityFile ~/.ssh/swiftai_deploy
      IdentitiesOnly yes
    ```
+2b. **Simpler alternative: clone over HTTPS** (instead of the key in step 2). If the repository is public, no login is needed. If it is private, create a read-only token: GitHub > Settings > Developer settings > Personal access tokens > Fine-grained tokens > Generate new token, "Only select repositories": this repository, Permissions > Repository permissions > **Contents: Read-only**. Then:
+   ```bash
+   git -c credential.helper=store clone https://github.com/dkiran/swiftaiwebsite.git ~/swiftaiwebsite
+   # username: dkiran    password: PASTE-THE-TOKEN (not your GitHub password)
+   chmod 600 ~/.git-credentials
+   cd ~/swiftaiwebsite && git config credential.helper store     # later pulls reuse the saved token (this repo only)
+   ```
+   Never put the token inside the clone URL, and never share it in chat.
 3. **Clone** (use the branch you deploy from; `main` once you merge, until then the working branch):
    `git clone -b claude/optimistic-cray-185hzk git@github-swiftai:dkiran/swiftaiwebsite.git ~/swiftaiwebsite`
 4. Make sure the folders exist and are yours: `sudo mkdir -p /var/www/swiftai /opt/swiftai-api && sudo chown $USER:$USER /var/www/swiftai /opt/swiftai-api`

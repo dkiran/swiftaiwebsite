@@ -27,7 +27,7 @@ const schema = [breadcrumbSchema([{ name: 'Home', path: '/' }, { name: 'About', 
     <h2>The CTO network</h2>
     <p>We are building a network of experienced CTOs so that startups, SMEs and larger companies can find technology leadership, fractionally or full-time. Experienced CTOs can <a href="/join-as-a-cto/">apply to join</a>, and companies can <a href="/hire-a-cto/">request a CTO</a>.</p>
     <h2>Company details</h2>
-    <p>{site.legalName}<br />{site.address}<br />GSTIN: {site.gstin}<br />Email: <a href={`mailto:${site.email}`}>{site.email}</a><br />Phone: <a href={`tel:${site.phoneHref}`}>{site.phone}</a></p>
+    <p>{site.legalName}<br /><b>Office:</b> {site.address}<br /><b>Registered office:</b> {site.registeredAddress}<br />GSTIN: {site.gstin}<br />Email: <a href={`mailto:${site.email}`}>{site.email}</a><br />Phone: <a href={`tel:${site.phoneHref}`}>{site.phone}</a></p>
   </div></div></section>
   <CTA />
 </Base>

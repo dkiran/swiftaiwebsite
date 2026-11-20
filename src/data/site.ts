@@ -8,7 +8,11 @@ export const site = {
   email: 'hello@swift-ai.in',
   phone: '+91 8008575757',
   phoneHref: '+918008575757',
-  address: 'India', // PLACEHOLDER: registered office address
+  // Office (where the team works) and registered office (as per company registration), both from the founder.
+  office: { street: 'SPT Crafted Living, Doddagattiganabbe', locality: 'Bangalore Rural', region: 'Karnataka', postalCode: '562114' },
+  registered: { street: '506, Kaveri Block, Srihari Nilayam, VarshaViswanth Nagar, Tiruchanoor', locality: 'Tirupati', region: 'Andhra Pradesh', postalCode: '517503' },
+  address: 'SPT Crafted Living, Doddagattiganabbe, Bangalore Rural, Karnataka 562114, India',
+  registeredAddress: '506, Kaveri Block, Srihari Nilayam, VarshaViswanth Nagar, Tiruchanoor, Tirupati, Andhra Pradesh 517503, India',
   gstin: '29ABTCS1111K1Z0',
   social: { linkedin: '', x: '' }, // PLACEHOLDER: add profile URLs
   products: {

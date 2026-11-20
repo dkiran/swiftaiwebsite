@@ -11,6 +11,7 @@ const base = [
     ...(founder.name ? { founder: { '@type': 'Person', name: founder.name, jobTitle: founder.title } } : {}),
     sameAs: Object.values(site.social).filter(Boolean),
     taxID: site.gstin, telephone: site.phoneHref,
+    address: [site.office, site.registered].map((a) => ({ '@type': 'PostalAddress', streetAddress: a.street, addressLocality: a.locality, addressRegion: a.region, postalCode: a.postalCode, addressCountry: 'IN' })),
     contactPoint: { '@type': 'ContactPoint', contactType: 'sales', email: site.email, telephone: site.phoneHref, areaServed: 'IN', availableLanguage: ['en', 'hi'] } },
   { '@context': 'https://schema.org', '@type': 'WebSite', '@id': `${site.url}/#website`, url: site.url, name: site.name, publisher: { '@id': `${site.url}/#org` } },
 ];

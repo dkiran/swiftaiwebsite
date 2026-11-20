@@ -29,6 +29,8 @@ ${posts.map((p) => `- [${p.data.title}](${u(`/blog/${p.id}/`)}): ${p.data.descri
 - Founder: D Kiran Kumar (20+ years in software development; fractional CTO; transportation CTO experience; GPS telematics; Founder of SingleQR; CTO of BharatSelfDrive.com, a self-drive platform)
 - Contact: ${site.email}, ${site.phone}
 - Legal name: ${site.legalName}
+- Office: ${site.address}
+- Registered office: ${site.registeredAddress}
 - Country: India
 - Contact: ${u('/contact/')}
 `;
